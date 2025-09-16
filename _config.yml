@@ -31,7 +31,7 @@ masthead_title           : # overrides the website title displayed in the masthe
 breadcrumbs              : # true, false (default)
 words_per_minute         : 200
 enable_copy_code_button  : # true, false (default)
-copyright                : # "copyright" name, defaults to site.title
+copyright                : "Hayden Estabrook" # "copyright" name, defaults to site.title
 copyright_url            : # "copyright" URL, defaults to site.url
 comments:
   provider               : # false (default), "disqus", "discourse", "facebook", "staticman", "staticman_v2", "utterances", "giscus", "custom"
@@ -115,19 +115,19 @@ analytics:
 author:
   name             : "Hayden Estabrook"
   avatar           : "https://avatars.githubusercontent.com/u/197121167?v=4" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "Hayden is a management consultant-turned-data scientist with 7 years experience turning messy problems into actionable insights."
+  bio              : "Management consultant-turned-data scientist. 7 years' experience turning messy problems into actionable insights."
   location         : "Toronto, ON"
-  email            : "Hayden.Estabrook@gmail.com"
+  email            : #"Hayden.Estabrook@gmail.com"
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
-      url: "mailto:hayden.estabrook@gmail.com"
+      #url: "mailto:hayden.estabrook@gmail.com"
     - label: "LinkedIn"
       icon: "fab fa-linkedin"
-      url: "https://www.linkedin.com/in/hayden-estabrook/"
+      #url: "https://www.linkedin.com/in/hayden-estabrook/"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      url: "https://github.com/hestabroo"
+      #url: "https://github.com/hestabroo"
 
 # Site Footer
 footer:
@@ -142,6 +142,8 @@ footer:
       icon: "fab fa-fw fa-github"
       url: "https://github.com/hestabroo"
   since: "2025"
+  feed:
+    rss: false
 
 
 # Reading Files
