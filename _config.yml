@@ -115,7 +115,7 @@ analytics:
 author:
   name             : "Hayden Estabrook"
   avatar           : "https://avatars.githubusercontent.com/u/197121167?v=4" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "Management Consultant turned Data Scientist. Seven years experience turning messy questions into actionable insights."
+  bio              : "Management Consultant turned Data Scientist. Seven years' experience turning messy questions into actionable insights."
   location         : "Toronto, ON"
   email            : #"Hayden.Estabrook@gmail.com"
   links:
