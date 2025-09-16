@@ -136,7 +136,7 @@ footer:
       icon: "fas fa-fw fa-envelope-square"
       url: "mailto:hayden.estabrook@gmail.com"
     - label: "LinkedIn"
-      icon: "fa fa-linkedin"
+      icon: "fa-brands fa-linkedin-in"
       url: "https://www.linkedin.com/in/hayden-estabrook/"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
