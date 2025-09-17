@@ -31,7 +31,7 @@ The Extended Streaming History comes as a zipped json package, and was honestly 
   
   The app is hosted on Streamlit.  Very simple out-of-the-box file uploader, and set up basic unpacking of the zip:
   
-  ```python
+  {% highlight python %}
     st.write("")
     st.subheader("File Upload")
     zipobj = st.file_uploader(
@@ -64,7 +64,7 @@ The Extended Streaming History comes as a zipped json package, and was honestly 
         st_progress_text.empty()
         st_progress_bar.empty()
         st.stop()
-  ```
+  {% endhighlight %}
 
   Besides that, I did some basic cleanup to filter out audiobooks and other lame not-music stuff, as well as to truncate a "tail" at the start of usage (this might have just been a me thing, but my account "existed" ~a year before I really started using it, so most charts had a year of whitespace).  Also added some QOL columns:
   
