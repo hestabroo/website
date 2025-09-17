@@ -25,12 +25,13 @@ I wanted to build a tool that gave a more comprehensive picture of your listenin
 
 The Extended Streaming History comes as a zipped json package, and was honestly pretty plug and play.  Some quick minor data cleanup and helper columns and we were good to go!
 
+{% raw %}
 <details>
   <summary>Full code for nerds</summary>
   
   The app is hosted on Streamlit.  Very simple out-of-the-box file uploader, and set up basic unpacking of the zip:
   
-  <pre><code class="language-python">
+  ```python
     st.write("")
     st.subheader("File Upload")
     zipobj = st.file_uploader(
@@ -63,7 +64,7 @@ The Extended Streaming History comes as a zipped json package, and was honestly 
         st_progress_text.empty()
         st_progress_bar.empty()
         st.stop()
-  </code></pre>
+  ```
 
   Besides that, I did some basic cleanup to filter out audiobooks and other lame not-music stuff, as well as to truncate a "tail" at the start of usage (this might have just been a me thing, but my account "existed" ~a year before I really started using it, so most charts had a year of whitespace).  Also added some QOL columns:
   
@@ -91,7 +92,7 @@ The Extended Streaming History comes as a zipped json package, and was honestly 
     streamhx = streamhx[streamhx['dttm']>=start_date]
   </code></pre>
   
-</details>
+</details>{% endraw %}
 
 ## The Analysis
 First up was the basics.  Critical as I was of Spotify only really doing the "top 10s", obviosuly it's something users will want to see, and a pretty cool thing to see across *all time*.  I tried to add a little more info around how many cumulative hours have been spent listening to each track/artist, as well as the "peak listening periods" for each:
