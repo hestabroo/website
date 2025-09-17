@@ -67,7 +67,7 @@ The Extended Streaming History comes as a zipped json package, and was honestly 
 
   Besides that, I did some basic cleanup to filter out audiobooks and other lame not-music stuff, as well as to truncate a "tail" at the start of usage (this might have just been a me thing, but my account "existed" ~a year before I really started using it, so most charts had a year of whitespace).  Also added some QOL columns:
   
-  <pre><code class="language-python">
+  {% highlight python %}
     streamhx = streamhx[streamhx['audiobook_title'].isna()]  #remove audiobooks and other nerd shit
     
     streamhx['dttm'] = pd.to_datetime(streamhx['ts'])
@@ -89,7 +89,7 @@ The Extended Streaming History comes as a zipped json package, and was honestly 
     
     start_date = np.percentile(streamhx['dttm'],1)  #exclude tail before really using account...if like me.  should be insignificant otherwise
     streamhx = streamhx[streamhx['dttm']>=start_date]
-  </code></pre>
+  {% endhighlight %}
   
 </details>
 
