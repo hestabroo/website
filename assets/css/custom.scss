@@ -6,6 +6,14 @@ code {
   font-size: 0.9em;
 }
 
+figure figcaption {
+  font-size: 0.7em;       /* smaller than body text */
+  font-weight: 300;         /* lighter font weight */
+  color: #6c757d;           /* subtle gray */
+  text-align: center;       /* optional */
+  margin-top: 0.25em;       /* spacing from image */
+}
+
 .highlight{
   background: #f6f8fa;  /* light grey background */
   color: #24292e;       /* default text color */
