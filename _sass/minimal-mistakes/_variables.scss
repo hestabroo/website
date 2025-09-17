@@ -133,7 +133,7 @@ $gitlab-color: #e24329 !default;
 $instagram-color: #517fa4 !default;
 $keybase-color: #ef7639 !default;
 $lastfm-color: #d51007 !default;
-$linkedin-color: #007bb6 !default;
+$linkedin-color: #171516 !default;
 $mastodon-color: #2b90d9 !default;
 $pinterest-color: #cb2027 !default;
 $reddit-color: #ff4500 !default;
@@ -160,23 +160,23 @@ $navicon-link-color-hover: mix(#fff, $primary-color, 75%) !default;
 $notice-background-mix: 80% !default;
 $code-notice-background-mix: 90% !default;
 
-/* neon syntax highlighting (base16) */
-$base00: #ffffff;
-$base01: #e0e0e0;
-$base02: #d0d0d0;
-$base03: #b0b0b0;
-$base04: #000000;
-$base05: #101010;
-$base06: #151515;
-$base07: #202020;
-$base08: #ff0086;
-$base09: #fd8900;
-$base0a: #aba800;
-$base0b: #00c918;
-$base0c: #1faaaa;
-$base0d: #3777e6;
-$base0e: #ad00a1;
-$base0f: #cc6633;
+/* default syntax highlighting (base16) */
+$base00: #263238;
+$base01: #2e3c43;
+$base02: #314549;
+$base03: #546e7a;
+$base04: #b2ccd6;
+$base05: #eeffff;
+$base06: #eeffff;
+$base07: #ffffff;
+$base08: #f07178;
+$base09: #f78c6c;
+$base0a: #ffcb6b;
+$base0b: #c3e88d;
+$base0c: #89ddff;
+$base0d: #82aaff;
+$base0e: #c792ea;
+$base0f: #ff5370;
 
 /*
    Breakpoints
