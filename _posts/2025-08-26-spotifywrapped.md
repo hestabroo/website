@@ -9,7 +9,7 @@ tags: [Machine Learning, Dashboards]
 image: "/assets/project_assets/20250826_spotifywrapped/spotifywraped_app_screenshot.png"
 date: 2025-08-26
 ---
-![Landing page for the "Spotify Wrapped+" app](assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
+![Landing page for the "Spotify Wrapped+" app](/assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
 
 *tl;dr Check out [this neat tool](https://haydenestabrook-spotifywrapped.streamlit.app/) I built to analyze your all-time Spotify listening history!*
 
@@ -27,74 +27,78 @@ The Extended Streaming History comes as a zipped json package, and was honestly 
 
 <details>
   <summary>Full code for nerds</summary>
+  
   The app is hosted on Streamlit.  Very simple out-of-the-box file uploader, and set up basic unpacking of the zip:
-  <pre><code>
-  st.write("")
-st.subheader("File Upload")
-zipobj = st.file_uploader(
-    "Upload your Spotify Extended Play History (.zip format).  Don't have your play history data yet? [Click here](https://hestabroo.github.io/SpotifyWrapped/SpotifyDownloadInstructions.html) to download it!", 
-    type=['zip']
-)
-while zipobj is None:
-    st.stop()  #wait until we have a file
-
-st_progress_text = st.empty()
-st_progress_bar = st.progress(0)
-
-#wrap this in a try in case wrong format
-try:
-    st_progress_text.write("🤐 Un-zipping your data...")
-    with zipfile.ZipFile(zipobj) as z:
-        files = [f for f in z.namelist() if f.startswith("Spotify Extended Streaming History/Streaming_History_Audio") and f.endswith(".json")]
-        files = sorted(files)
-
-        dfs=[]
-        for f in files:
-            with z.open(f) as fo:
-                data = pd.DataFrame(json.load(fo))
-                dfs.append(data)
-
-    streamhx = pd.concat(dfs).reset_index()
-    if streamhx.empty: raise BadData("no data imported")  #explicitly call an error if it's empty
-except:
-    st.error("Hm... That doesn't seem to be the right file/format... Try again?")
-    st_progress_text.empty()
-    st_progress_bar.empty()
-    st.stop()
+  
+  <pre><code class="language-python">
+    st.write("")
+    st.subheader("File Upload")
+    zipobj = st.file_uploader(
+        "Upload your Spotify Extended Play History (.zip format).  Don't have your play history data yet? [Click here](https://hestabroo.github.io/SpotifyWrapped/SpotifyDownloadInstructions.html) to download it!", 
+        type=['zip']
+    )
+    while zipobj is None:
+        st.stop()  #wait until we have a file
+    
+    st_progress_text = st.empty()
+    st_progress_bar = st.progress(0)
+    
+    #wrap this in a try in case wrong format
+    try:
+        st_progress_text.write("🤐 Un-zipping your data...")
+        with zipfile.ZipFile(zipobj) as z:
+            files = [f for f in z.namelist() if f.startswith("Spotify Extended Streaming History/Streaming_History_Audio") and f.endswith(".json")]
+            files = sorted(files)
+    
+            dfs=[]
+            for f in files:
+                with z.open(f) as fo:
+                    data = pd.DataFrame(json.load(fo))
+                    dfs.append(data)
+    
+        streamhx = pd.concat(dfs).reset_index()
+        if streamhx.empty: raise BadData("no data imported")  #explicitly call an error if it's empty
+    except:
+        st.error("Hm... That doesn't seem to be the right file/format... Try again?")
+        st_progress_text.empty()
+        st_progress_bar.empty()
+        st.stop()
   </code></pre>
 
-Besides that, I did some basic cleanup to filter out audiobooks and other lame not-music stuff, as well as to truncate a "tail" at the start of usage (this might have just been a me thing, but my account "existed" ~a year before I really started using it, so most charts had a year of whitespace).  Also added some QOL columns:
-<pre><code>
-streamhx = streamhx[streamhx['audiobook_title'].isna()]  #remove audiobooks and other nerd shit
-
-streamhx['dttm'] = pd.to_datetime(streamhx['ts'])
-streamhx['dttm_local'] = streamhx['dttm'].dt.tz_convert('America/New_York')  #convert to local timezone
-
-streamhx['year'] = streamhx['dttm'].dt.year
-streamhx['month_start'] = streamhx['dttm'].dt.to_period("M").dt.start_time
-streamhx['week_start'] = streamhx['dttm'].dt.to_period("W").dt.start_time
-streamhx['hour'] = streamhx['dttm'].dt.hour
-streamhx['weekday'] = streamhx['dttm'].dt.day_name()
-
-streamhx['hr_played'] = streamhx['ms_played'] / 1000 / 60 / 60
-
-streamhx.rename(columns={
-    'master_metadata_track_name':'song_name',
-    'master_metadata_album_artist_name':'artist_name',
-    'master_metadata_album_album_name': 'album_name'
-}, inplace=True)  #simplify some column names
-
-start_date = np.percentile(streamhx['dttm'],1)  #exclude tail before really using account...if like me.  should be insignificant otherwise
-streamhx = streamhx[streamhx['dttm']>=start_date]
-</code></pre>
+  Besides that, I did some basic cleanup to filter out audiobooks and other lame not-music stuff, as well as to truncate a "tail" at the start of usage (this might have just been a me thing, but my account "existed" ~a year before I really started using it, so most charts had a year of whitespace).  Also added some QOL columns:
+  
+  <pre><code class="language-python">
+    streamhx = streamhx[streamhx['audiobook_title'].isna()]  #remove audiobooks and other nerd shit
+    
+    streamhx['dttm'] = pd.to_datetime(streamhx['ts'])
+    streamhx['dttm_local'] = streamhx['dttm'].dt.tz_convert('America/New_York')  #convert to local timezone
+    
+    streamhx['year'] = streamhx['dttm'].dt.year
+    streamhx['month_start'] = streamhx['dttm'].dt.to_period("M").dt.start_time
+    streamhx['week_start'] = streamhx['dttm'].dt.to_period("W").dt.start_time
+    streamhx['hour'] = streamhx['dttm'].dt.hour
+    streamhx['weekday'] = streamhx['dttm'].dt.day_name()
+    
+    streamhx['hr_played'] = streamhx['ms_played'] / 1000 / 60 / 60
+    
+    streamhx.rename(columns={
+        'master_metadata_track_name':'song_name',
+        'master_metadata_album_artist_name':'artist_name',
+        'master_metadata_album_album_name': 'album_name'
+    }, inplace=True)  #simplify some column names
+    
+    start_date = np.percentile(streamhx['dttm'],1)  #exclude tail before really using account...if like me.  should be insignificant otherwise
+    streamhx = streamhx[streamhx['dttm']>=start_date]
+  </code></pre>
+  
 </details>
 
 ## The Analysis
 First up was the basics.  Critical as I was of Spotify only really doing the "top 10s", obviosuly it's something users will want to see, and a pretty cool thing to see across *all time*.  I tried to add a little more info around how many cumulative hours have been spent listening to each track/artist, as well as the "peak listening periods" for each:
 
-![My top artists...](assets/projects/20250811_spotifywrapped_siteassets/topartists_table.png)
+![My top artists...](/assets/projects/20250811_spotifywrapped_siteassets/topartists_table.png)
 
-![...and top songs.  For the uninitated, The Dirty Nelsons is the band I drum in... embarassing.](assets/projects/20250811_spotifywrapped_siteassets/topsongs_table.png)
+![...and top songs.  For the uninitated, The Dirty Nelsons is the band I drum in... embarassing.](/assets/projects/20250811_spotifywrapped_siteassets/topsongs_table.png)
 
 <details>
   <summary>Full code for nerds</summary>
