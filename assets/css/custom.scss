@@ -1,5 +1,9 @@
 ---
 ---
+body {
+  color: #FF0000;  /*test*/
+}
+
 .post-content p {
   font-size: 0.8em !important;
 }
@@ -7,5 +11,6 @@
 .post-content details{
   font-size: 0.7em !important;
   font-weight: 300 !important;
+  color: #0000FF;
 }
 
