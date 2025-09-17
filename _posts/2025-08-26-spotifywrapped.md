@@ -9,7 +9,7 @@ tags: [Machine Learning, Dashboards]
 image: "/assets/project_assets/20250826_spotifywrapped/spotifywraped_app_screenshot.png"
 date: 2025-08-26
 ---
-![Landing page for the "Spotify Wrapped+" app](/assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
+![Landing page for the "Spotify Wrapped+" app](assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
 
 *tl;dr Check out [this neat tool](https://haydenestabrook-spotifywrapped.streamlit.app/) I built to analyze your all-time Spotify listening history!*
 
