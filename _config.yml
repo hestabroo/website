@@ -312,4 +312,3 @@ defaults:
       comments: # true
       share: true
       related: false
-      custom_css: "assets/css/custom"
