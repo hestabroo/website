@@ -192,6 +192,7 @@ highlighter: rouge
 lsi: false
 excerpt_separator: "\n\n"
 incremental: false
+custom_css: "/assets/css/custom.scss"
 
 
 # Markdown Processing
@@ -312,4 +313,3 @@ defaults:
       comments: # true
       share: true
       related: false
-      custom_css: "/assets/css/custom.scss"
