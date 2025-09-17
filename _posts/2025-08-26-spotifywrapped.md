@@ -16,17 +16,19 @@ date: 2025-08-26
 ## Intro
 Music is a huge part of my life, and as someone obsessed with data it should surprise no one that I love Spotify Wrapped season every December.  I love the opportunity to see what my friends have been listening to, discover new artists, and enjoy the embarassing outings of everyone's guilty pleasure songs. 
 
-*However*, I've always felt like the Wrapped summary you get each year feels so surface level and felt like a miss given the wealth of data Spotify has that they don't really go beyond "top 10 tracks/artists".  SO, I set out to make a "better" Spotify Wrapped that can go deeper into your personal listening style and look more broadly outside the vacuum of the "past 12 months".
+*However*, I've always felt like the Wrapped summary you get each year is quite surface level, and it felt like a miss given the wealth of data Spotify has that they don't really go beyond "top 10 tracks/artists".  SO, I set out to make a "better" Spotify Wrapped that can go deeper into your personal listening style and look more broadly outside the vacuum of the past 12 months.
 
 ## Getting The Data
-Spotify has (*had*, spoilers) some great developer APIs to query user play history and track info.  However, the API play history dataset is limited to the past 50 songs and some basic top tracks/artists info.  I wanted to build a tool that gave a more comprehensive picture of your listening, so I built the tool around Spotify's "Extended Streaming History", which is an all-time data dump you can request from Spotify.  Unfortunately, this did remove the ability to have an instant sign-on/OAuth UI for the app - but I felt like the pros outweighed the cons here.
+Spotify has (*had*...spoilers) some great developer APIs to query user play history and track info.  However, the API play history dataset is limited to just the past 50 songs and some basic top tracks/artists info.  
+
+I wanted to build a tool that gave a more comprehensive picture of your listening, so I built the tool around Spotify's "Extended Streaming History", which is an all-time data dump you can request from Spotify.  Unfortunately, this did remove the ability to have an instant sign-on/OAuth UI for the app - but I felt like the pros outweighed the cons here.
 
 The Extended Streaming History comes as a zipped json package, and was honestly pretty plug and play.  Some quick minor data cleanup and helper columns and we were good to go!
 
 <details>
   <summary>Full code for nerds</summary>
   The app is hosted on Streamlit.  Very simple out-of-the-box file uploader, and set up basic unpacking of the zip:
-  ```python
+  <pre><code>
   st.write("")
 st.subheader("File Upload")
 zipobj = st.file_uploader(
@@ -59,10 +61,10 @@ except:
     st_progress_text.empty()
     st_progress_bar.empty()
     st.stop()
-```
+  </code></pre>
 
 Besides that, I did some basic cleanup to filter out audiobooks and other lame not-music stuff, as well as to truncate a "tail" at the start of usage (this might have just been a me thing, but my account "existed" ~a year before I really started using it, so most charts had a year of whitespace).  Also added some QOL columns:
-```python
+<pre><code>
 streamhx = streamhx[streamhx['audiobook_title'].isna()]  #remove audiobooks and other nerd shit
 
 streamhx['dttm'] = pd.to_datetime(streamhx['ts'])
@@ -84,7 +86,7 @@ streamhx.rename(columns={
 
 start_date = np.percentile(streamhx['dttm'],1)  #exclude tail before really using account...if like me.  should be insignificant otherwise
 streamhx = streamhx[streamhx['dttm']>=start_date]
-```
+</code></pre>
 </details>
 
 ## The Analysis
