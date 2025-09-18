@@ -405,7 +405,7 @@ def border_patch():
 ax.add_patch(wkday_patch())
 ax.add_patch(wkend_patch())
 ax.add_patch(border_patch())
-  {% end highlight %}
+  {% endhighlight %}
 </details>
 
 
