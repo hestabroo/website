@@ -465,7 +465,7 @@ artist_tags_long = artist_tags_long[artist_tags_long['tag_name'].isin(tags_keep)
 
 artist_tags = artist_tags_long.pivot_table(index='artist_name', columns='tag_name', values='ct', aggfunc='max')  #convert to wide format  #for some reason, some artists have the same tag twice... use aggfunc=max
 artist_tags = artist_tags.fillna(0)
-  {% endhighlight }%
+  ```
 </details>
 
 Using these user-generated tags, I then fit a clustering model to identify the core musical styles that describe a user's dominant listening styles.  If you're a nerd like me, there's a doozy of a dropdown here on how exactly I got this model to give good classifications, but the "so what" is that it condenses the thousands of user-generated tags into a small handful of meaningful styles:
