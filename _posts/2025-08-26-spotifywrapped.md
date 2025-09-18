@@ -65,7 +65,7 @@ The Extended Streaming History comes as a zipped json package, and was honestly 
         st.stop()
   {% endhighlight %}
 
-  Besides that, I did some basic cleanup to filter out audiobooks and other lame not-music stuff, as well as to truncate a "tail" at the start of usage (this might have just been a me thing, but my account "existed" ~a year before I really started using it, so most charts had a year of whitespace).  Also added some QOL columns:
+  Besides that, I did some basic cleanup to filter out audiobooks and other lame not-music stuff, as well as to truncate a "tail" at the start of usage (this might have just been a me thing, but my account "existed" a year before I really started using it, so most charts had a year of whitespace).  Also added some QOL columns:
   
   {% highlight python %}
     streamhx = streamhx[streamhx['audiobook_title'].isna()]  #remove audiobooks and other nerd shit
@@ -108,7 +108,7 @@ First up was the basics.  Critical as I was of Spotify only really doing the "to
   <summary>Full code for nerds</summary>
   I don't need to bore you with the basics of finding top artists/tracks.  Only interesting thing here was the identification of a "peak listening window".  A bit arbitrarily, I defined this to be the smallest possible window containing at least 50% of the artist's playtime.<br><br>
   
-  At first I tried to do this by iteratively "shrinking" the full date, dropping the lowest-volume end - but this greedy logic got hung up on local peaks.  I ended up looping through each possible window start point and extending *outwards* until 50% was captured, and finding the best (smallest) window that achieved this:
+  At first I tried to do this by iteratively "shrinking" the full date, dropping the lowest-volume end - but this greedy logic got hung up on local peaks.  I ended up looping through each possible window start point and extending <em>outwards</em> until 50% was captured, and finding the best (smallest) window that achieved this:
 
   {% highlight python %}
   #find the smallest possible window containing x% of play time
@@ -151,7 +151,7 @@ In addition to the pure Top 10, I also wanted to try to tease out tracks and art
 
 <details>
   <summary>Full code for nerds</summary>
-  The method here was to look for the songs and artists that had the highest median playtime across **all** months (including those with no playtime).  Could there be a better method for this?  Almost definitely.  But this was added pretty late in the project as a fun little callout and I felt like it satisfied the need.<br><br>
+  The method here was to look for the songs and artists that had the highest median playtime across <strong>all</strong> months (including those with no playtime).  Could there be a better method for this?  Almost definitely.  But this was added pretty late in the project as a fun little callout and I felt like it satisfied the need.<br><br>
 
   Approach was just to blow out songs and artists into a full grid of each month and rank medians.  For obvious reasons, medians of zero are excluded:
   
@@ -237,7 +237,7 @@ for f in [fig.update_xaxes, fig.update_yaxes]:  #iteratiely update both axis
 
 
 ### Musical "Binges"
-Another thing I wanted to do here was to call out those times we all get obsessed with one song for a week or two.  This is probably my favourite section of the whole analysis, as for me it was simultaneously a fun trip down memory lane for songs I've absolutely loved, and a super embarassing exposé of guilty pleasures.  The high-level design here was to create a table for each song's plays per week and identify an "outlier" threshold for the music binges to highlight on the list:
+Another thing I wanted to do here was to call out those times we all get obsessed with one song for a week or two.  This is probably my favourite section of the whole analysis, as for me it was simultaneously a fun trip down memory lane, and a super embarassing exposé of guilty pleasures.  The high-level design here was to create a table for each song's plays per week and identify an "outlier" threshold for the music binges to highlight on the list:
 
 ![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/obsessions.png)
 <figcaption>...Mortifying.  I can vividly remember each of these weeks lol</figcaption>
@@ -264,7 +264,9 @@ songs = songs.merge(best_weeks, on=['song_name', 'artist_name'])
 songs.head(20)
 {% endhighlight %}
 
-In terms of creating the full list of "binges", the only real thing left to do here was identify a sufficiently embarassing threshold.  I tried to make this as dynamic as possible by referencing the 95th percentile of song weeks (as opposed to a hard cutoff on plays or hours, which may be very different for different people).  I noticed one weird tweak in my data where some songs would have a ton of very short plays (i.e. lots of skips), so added a filter that at least 1 minute on avg. must hvae been played in the week.  I also limited to one top song per week, since I at least had a lot of weeks where **every** track on an album/playlist appeared and it crowded the list:
+In terms of creating the full list of "binges", the only real thing left to do here was identify a sufficiently embarassing threshold.  I tried to make this as dynamic as possible by referencing the 95th percentile of song weeks (as opposed to a hard cutoff on plays or hours, which may be very different for different people).<br><br>
+
+I noticed one weird tweak in my data where some songs would have a ton of very short plays (i.e. lots of skips), so added a filter that at least 1 minute on avg. must hvae been played in the week.  I also limited to one top song per week, since I at least had a lot of weeks where every track on an album/playlist appeared and it crowded the list:
 
 {% highlight python %}
 #what were your obsessions??
