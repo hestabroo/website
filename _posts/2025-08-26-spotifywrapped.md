@@ -6,21 +6,9 @@ subtitle: "Creating an easy, interactive tool to analyze *all-time* Spotify list
 excerpt: "Creating an easy, interactive tool to analyze *all-time* Spotify listening trends"
 author_profile: false
 tags: [Machine Learning, Dashboards]
-image: "assets/project_assets/20250826_spotifywrapped/spotifywraped_app_screenshot.png"
+image: "{{ site.baseurl }}/assets/project_assets/20250826_spotifywrapped/spotifywraped_app_screenshot.png"
 date: 2025-08-26
 ---
-<figure>
-  <img src="{{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png">
-  <figcaption>
-    Landing page for the Spotify Wrapped+ app
-  </figcaption>
-</figure>
-
-![]({{ site.url }}{{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
-<figcaption>
-  Landing page for the Spotofy Wrapped+ app
-</figcaption>
-
 ![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
 <figcaption>
   Landing page for the Spotofy Wrapped+ app
