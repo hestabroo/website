@@ -38,9 +38,9 @@ layout: default
 
           <!--HE trying to add a subtitle to the layout...-->
           {% if page.subtitle -%}
-          <he_subtitle id="page-subtitle" class="he_subtitle">
+          <h4 id="page-subtitle" class="he_subtitle">
             {{ page.subtitle | markdownify | remove: "<p>" | remove: "</p>" }}
-          </he_subtitle>
+          </h4>
           {% endif %}
           
           {% include page__meta.html %}
