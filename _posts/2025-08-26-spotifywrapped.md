@@ -30,7 +30,7 @@ The Extended Streaming History comes as a zipped json package, and was honestly 
   <summary>Full code for nerds</summary>
   The app is hosted on Streamlit.  Very simple out-of-the-box file uploader and of the zip:
   
-  {% highlight python %}
+  ``` python
     st.write("")
     st.subheader("File Upload")
     zipobj = st.file_uploader(
@@ -63,11 +63,11 @@ The Extended Streaming History comes as a zipped json package, and was honestly 
         st_progress_text.empty()
         st_progress_bar.empty()
         st.stop()
-  {% endhighlight %}
+  ```
 
   Besides that, I did some basic cleanup to filter out audiobooks and other lame not-music stuff, as well as to truncate a "tail" at the start of usage (this might have just been a me thing, but my account "existed" a year before I really started using it, so most charts had a year of whitespace).  Also added some QOL columns:
   
-  {% highlight python %}
+  ``` python
     streamhx = streamhx[streamhx['audiobook_title'].isna()]  #remove audiobooks and other nerd shit
     
     streamhx['dttm'] = pd.to_datetime(streamhx['ts'])
@@ -89,7 +89,7 @@ The Extended Streaming History comes as a zipped json package, and was honestly 
     
     start_date = np.percentile(streamhx['dttm'],1)  #exclude tail before really using account...if like me.  should be insignificant otherwise
     streamhx = streamhx[streamhx['dttm']>=start_date]
-  {% endhighlight %}
+  ```
   
 </details>
 
@@ -110,7 +110,7 @@ First up was the basics.  Critical as I was of Spotify only really doing the "to
   
   At first I tried to do this by iteratively "shrinking" the full date, dropping the lowest-volume end - but this greedy logic got hung up on local peaks.  I ended up looping through each possible window start point and extending <em>outwards</em> until 50% was captured, and finding the best (smallest) window that achieved this:
 
-  {% highlight python %}
+  ``` python
   #find the smallest possible window containing x% of play time
 artist_month.sort_values(by=['artist_name', 'month_start'], inplace=True)
 target = 0.5
@@ -141,7 +141,7 @@ for a in artists.index:  #per artist...
     top_ranges.append(f"{_startdt:%b '%y} - {_enddt:%b '%y}")
 
 artists['peak_range'] = top_ranges
-{% endhighlight %}
+```
 </details>
 
 In addition to the pure Top 10, I also wanted to try to tease out tracks and artists that have had *consistent* playtime throughout your life (or, your life on Spotify at least).  I suppose unsurprisingly in retrospect, there weren't that many hits for songs that have had consistent playtime over a user's **entire** time on Spotify, so I decided to just call out the top one for each.  For me, the results made a lot of sense and was cool to see how this highlighted a song that wasn't even in my Top 5:
@@ -155,7 +155,7 @@ In addition to the pure Top 10, I also wanted to try to tease out tracks and art
 
   Approach was just to blow out songs and artists into a full grid of each month and rank medians.  For obvious reasons, medians of zero are excluded:
   
-  {% highlight python %}
+  ``` python
   #what was your most CONSISTENT song?
   full_songs = pd.DataFrame({'song_name': streamhx['song_name'].unique()})
   full_grid = full_months.merge(full_songs, how="cross")
@@ -170,11 +170,11 @@ In addition to the pure Top 10, I also wanted to try to tease out tracks and art
   
   goto_song = song_rank.head(1)['song_name'].iloc[0]
   goto_songartist = songs[songs['song_name']==goto_song].head(1)['artist_name'].iloc[0]
-  {% endhighlight %}
+  ```
   
   Recognizing that zeros were being excluded and that may mean some users don't get any hits here - I coded this as an optional output in the app that only shows where applicable:
   
-  {% highlight python %}
+  ``` python
   ##Top Songs##
   _optionalphrase = ""
   if len(goto_song)>0: _optionalphrase = f"Your theme song for the past {datayears} years has been **{goto_song}** by **{goto_songartist}**.  While it may not have been your most played, this is the song you've listened to the most consistently through it all.  "
@@ -185,7 +185,7 @@ In addition to the pure Top 10, I also wanted to try to tease out tracks and art
            "Check out the full list of your top tracks below:"
            )
   st.dataframe(df_topsongs_display, height=387)
-  {% endhighlight %}
+  ```
 </details>
 
 
@@ -203,7 +203,7 @@ The second thing I wanted to do to take this a bit deeper was show the full hist
   <summary>Full code for nerds</summary>
   Pretty straightforward here - only real thing of note was transforming monthly playtime to a rolling 6mo avg. to smooth out spikes and highlight overall trends.  The in-app visual leverages plotly for an interactive visual, letting users filter or drill down to specific artists, and zoom into time ranges:
 
-  {% highlight python %}
+  ``` python
 artist_month['hrs_perweek'] = artist_month['hr_played'] / 4.3  #avg weeks/month
 
 artist_month['artist_name'] = pd.Categorical(artist_month['artist_name'], categories=artists.index, ordered=True)  #convert to categorical to allow sorting by top artists
@@ -232,7 +232,7 @@ fig.update_layout(plot_bgcolor='white', xaxis_title='')
 
 for f in [fig.update_xaxes, fig.update_yaxes]:  #iteratiely update both axis
     f(gridcolor='gainsboro', griddash='dot', gridwidth=0)
-    {% endhighlight %}
+    ```
 </details>
 
 
@@ -246,7 +246,7 @@ Another thing I wanted to do here was to call out those times we all get obsesse
   <summary>Full code and method (for nerds)</summary>
   First up was generating the songs x weeks table.  This was also leveraged for the "top week" section of the Top Songs above:
   
-  {% highlight python %}
+  ``` python
   #biggest week
 songweeks = streamhx.groupby(by=['song_name', 'artist_name', 'week_start'], as_index=False).agg(
     times_played=('ts','count'),
@@ -262,13 +262,13 @@ best_weeks.rename(columns={
 }, inplace=True)
 songs = songs.merge(best_weeks, on=['song_name', 'artist_name'])
 songs.head(20)
-{% endhighlight %}
+```
 
 In terms of creating the full list of "binges", the only real thing left to do here was identify a sufficiently embarassing threshold.  I tried to make this as dynamic as possible by referencing the 95th percentile of song weeks (as opposed to a hard cutoff on plays or hours, which may be very different for different people).<br><br>
 
 I noticed one weird tweak in my data where some songs would have a ton of very short plays (i.e. lots of skips), so added a filter that at least 1 minute on avg. must hvae been played in the week.  I also limited to one top song per week, since I at least had a lot of weeks where every track on an album/playlist appeared and it crowded the list:
 
-{% highlight python %}
+``` python
 #what were your obsessions??
 threshold = np.percentile(songweeks.groupby(by='week_start')['times_played'].max(), 95)  #make this dynamic to different listening styles
 obsessions = songweeks[(songweeks['times_played']>=threshold) & (songweeks['total_hrs']>threshold*1/60)]  #there seem to be weird weeks with lots of very short plays... exclude
@@ -278,7 +278,7 @@ _topids = obsessions.groupby('week_start')['times_played'].idxmax()
 obsessions = obsessions.loc[_topids]
 obsessions.sort_values(by='week_start', inplace=True)
 obsessions
-{% endhighlight %}
+```
 </details>
 
 
@@ -292,7 +292,7 @@ Another cool thing we have access to with the Extended Streaming History is a fu
   <summary>Full code for nerds</summary>
   The approach for peak hours here was the same as "peak listening range" for Top Artists.  I just rolled through each 12-month window in the user's play history and logged the window with the highest total playtime.  I also used plotly for interactive charting here and overlaid a rolling 6mo avg:
   
-  {% highlight python %}
+  ``` python
   weekly = streamhx.groupby(by='week_start', as_index=False)['hr_played'].sum()
 weekly = weekly.sort_values('week_start')
 weekly['6mo_avg'] = weekly['hr_played'].rolling(window=26).mean()
@@ -344,7 +344,7 @@ for f in [fig.update_xaxes, fig.update_yaxes]:  #iteratiely update both axis
 
 fig.write_html("plotly_totalplaytime.html", include_plotlyjs="cdn", full_html=True)
 fig.show()
-{% endhighlight %}
+```
 </details>
 
 The second cool thing we can do is create a heatmap for peak listening times!  In my case, I thought it was super cool that you can see me literally going to bed and waking up later on weekends, as well as that I apparently only tend to listen to music over lunch on Fridays:
@@ -356,7 +356,7 @@ The second cool thing we can do is create a heatmap for peak listening times!  I
   <summary>Full code for nerds</summary>
   Pretty basic pivot and plot here.  I define a couple formatting patches to outline work hours and weekends (these get reused later):
   
-  {% highlight python %}
+  ``` python
   datadays = (timedata['dttm'].max() - timedata['dttm'].min()).days
 
 timelabels = {}
@@ -405,7 +405,7 @@ def border_patch():
 ax.add_patch(wkday_patch())
 ax.add_patch(wkend_patch())
 ax.add_patch(border_patch())
-  {% endhighlight %}
+  ```
 </details>
 
 
@@ -418,7 +418,7 @@ Spotify's developer portal has a bunch of great APIs for querying genre and sent
   <summary>Full code (for nerds who care about API calls and data cleansing)</summary>
   Last.fm's TopArtistTags API returns a dictionary of user tags attributed to artists, sorted and scored by relative usage.  To be kind on the API, I only called this info for artists making up the top 90% of playtime:
 
-  {% highlight python %}
+  ``` python
 API_key = 'I'll keep this to myself :)'
 url = 'http://ws.audioscrobbler.com/2.0/'
 
@@ -439,13 +439,13 @@ for a in topartists:
     _c+=1
 
 responses = {artist: data for artist, data in responses.items() if 'toptags' in data}  #exclude responses without the toptags key (rare not found errors)
-  {% endhighlight %}
+  ```
 
   I then blew these dictionaries out into a single long-format table, cleaned up tags/removed common non-insightful ones, and re-pivoted this back to wide format to create a single table with a row per artist and each tag as a "feature" column (containing it's relative user-attributed weight for the artist).<br><br>
 
   Along the way, I did need to cut the hundreds of different user tags down to a more meaningful list to create a reasonable feature set for clustering.  There were a lot of more dynamic ways I tried doing this (tags held by >x% of artists, cumulative total count threshold, etc.), but because the number of clusters ended up being fixed (more on this later), a fixed number of features here gave the most consistent results:
 
-  {% highlight python %}
+  ``` python
 artist_tags_long = []                              
 for artist, data in responses.items():  #blow out dictionaries to long list of features
     for tag in data['toptags']['tag'][:]:  #only take the top x tags? [:x]
@@ -479,7 +479,7 @@ Using these user-generated tags, I then fit a clustering model to identify the c
 
   I used KMeans clustering for this.  In a desperate moment of poorly fit results I experimented with DBScan and HDBScan (as well as PCA) to see if they gave meaningfully better results - but they didn't much so I opted for simplicity.  In addition to StandardScaling in the model pipeline, I also scaled values across <en>samples</en> (artists), since dropping tags disproportionately removed weighting from some artists, and I wanted the remaining dataset to represent an even "distribution" of artists' tags across the remaining features.  I used an elbow method to identify an optimum number of clusters:
   
-  {% highlight python %}
+  ``` python
 #scale across ARTISTS, not features
 scaled_tags = StandardScaler().fit_transform(artist_tags.T).T
 artist_tags = pd.DataFrame(  #keep the index and column names
@@ -524,7 +524,7 @@ print(f"\nn={n}\n\nInertia: {results[n]['inertia']:.3f}\nDBI: {results[n]['DBI']
 ax = pd.DataFrame.from_dict(results, orient='index').plot(y=['inertia', 'silhouette', 'DBI'], secondary_y=['inertia'])
 ax.set_xlabel("n Clusters")
 plt.show()
-  {% endhighlight %}
+  ```
 
   ![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/kmeans_elbowresults.png)
   
@@ -532,7 +532,7 @@ plt.show()
   
   With the model fit, the last piece was just to name these clusters.  Below is a sample of the correlations my 20 clusters had with each tag:
 
-  {% highlight python %}
+  ``` python
 clusters = pd.DataFrame(
     kmodel.named_steps['kmeans'].cluster_centers_,
     columns = artist_tags.columns
@@ -543,13 +543,13 @@ ax = sns.heatmap(clusters.T, annot=True, fmt='.2f', annot_kws={'size':5})
 ax.set_xlabel("Cluster")
 ax.set_ylabel("Tag")
 plt.savefig("kmodel_fthmap.png")
-  {% endhighlight %}
+  ```
   
   ![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/kmodel_fthmap.png)
   
   For the most part, there's at least one pretty dominant tag for each cluster.  I set up logic to name the clusters based on (up to) the top two most correlated tags.  I attempted to define a threshold (20% of maximum correlation) for a value tight enough to include in naming.  After that, I just mapped the cluster names back onto each artist in the original dataset:
 
-  {% highlight python %}
+  ``` python
 naming_threshold = np.mean(clusters.max())/5  #could be different for different data
 cnames = {}
 for _c, r in clusters.iterrows():
@@ -569,11 +569,11 @@ tagged_artists['hr_played'] = tagged_artists['artist_name'].map(streamhx.groupby
 
 for c, _ in tagged_artists.groupby('cluster_name')['hr_played'].sum().sort_values(ascending=False).items():
     display(tagged_artists[tagged_artists['cluster_name']==c].sort_values(by='hr_played', ascending=False).head(10))
-  {% endhighlight %}
+  ```
 
   Finally, the last piece was to clean up clusters.  A few "catch-all" clusters appeared seemingly capturing a handful of artists that really didn't fit well anywhere else.  To keep the list clean, I limited the displayed clusters to just those explaining the top 90% of listening (so the final styles capture 81% of total listening for those keeping track).  This produces a final list of ~8-12 clean style clusters:
 
-  {% highlight python %}
+  ``` python
 artist_labels = tagged_artists.set_index('artist_name')['cluster_name']
 streamhx['cluster_name'] = streamhx['artist_name'].map(artist_labels)
 
@@ -582,7 +582,7 @@ _cumpct = _crank.cumsum() / _crank.sum()
 
 graph_clusters = _cumpct[_cumpct<=0.9].index  #only include categories that explain 90% of listening
 graph_clusters = [c for c in graph_clusters if c != 'Other']  #don't bother showing that "other" either if it shows up
-  {% endhighlight %}
+  ```
 </details>
 
 
