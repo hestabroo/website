@@ -576,7 +576,7 @@ plt.show()
   {% endhighlight %}
 
   <figure>
-    <img src="{{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/kmeans_elbowresults.png"
+    <img src="{{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/kmeans_elbowresults.png">
   </figure>
   
   Originally, the plan was to implement a full elbow method on each user's results and carry on with an optimum cluster size.  This was swapped for a fixed "20 clusters" in the final version because: 1) There was a pretty small "acceptable" range of clusters that balanced meaningful groupings and readability of later results, and 2) The Streamlit server is much slower than my laptop and this took ages to calculate.<br><br>
@@ -597,7 +597,7 @@ plt.savefig("kmodel_fthmap.png")
   {% endhighlight %}
 
   <figure>
-    <img src="{{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/kmodel_fthmap.png"
+    <img src="{{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/kmodel_fthmap.png">
   </figure>
   
   For the most part, there's at least one pretty dominant tag for each cluster.  I set up logic to name the clusters based on (up to) the top two most correlated tags.  I attempted to define a threshold (20% of maximum correlation) for a value tight enough to include in naming.  After that, I just mapped the cluster names back onto each artist in the original dataset:
@@ -624,7 +624,7 @@ for c, _ in tagged_artists.groupby('cluster_name')['hr_played'].sum().sort_value
     display(tagged_artists[tagged_artists['cluster_name']==c].sort_values(by='hr_played', ascending=False).head(10))
   {% endhighlight %}
 
-  Finally, the last piece was to clean up clusters.  A few "catch-all" clusters appeared seemingly capturing a handful of artists that really didn't fit well anywhere else.  To keep the list clean, I limited the displayed clusters to just those explaining the top 90% of listening (so the final styles capture 81% of total listening for those keeping track).  This produces a final list of ~8-12 clean style clusters:
+  Finally, the last piece was to clean up clusters.  A few "catch-all" clusters appeared seemingly capturing a handful of artists that really didn't fit well anywhere else.  To keep the list clean, I limited the displayed clusters to just those explaining the top 90% of listening (so the final styles capture 81% of total listening, for those keeping track).  This produces a final list of ~8-12 clean style clusters:
 
   {% highlight python %}
 artist_labels = tagged_artists.set_index('artist_name')['cluster_name']
