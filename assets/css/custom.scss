@@ -1,17 +1,17 @@
 ---
 ---
 //adding some final formatting overrides because I can't be fucked to find them in _sass
-.post-content p {
+.page__content p {
   font-size: 0.8em !important;
 }
 
-details {
+.page__content details {
   font-size: 0.8em;
   font-weight: 300;
   color: ##54e851;
 }
 
-details summary {
+.page__content details summary {
   font-size: 1.0em;
 }
 
