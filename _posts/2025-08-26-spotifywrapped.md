@@ -483,7 +483,7 @@ responses = {artist: data for artist, data in responses.items() if 'toptags' in 
 
   I then blew these dictionaries out into a single long-format table, cleaned up tags/removed common non-insightful ones, and re-pivoted this back to wide format to create a single table with a row per artist and each tag as a "feature" column (containing it's relative user-attributed weight for the artist).<br><br>
 
-  Along the way, I did need to cut the hundreds of different user tags down to a more meaningful list to create a reasonable feature set for clustering.  There were a lot of more dynamic ways I tried doing this (tags held by >x% of artists, cumulative total count threshold, etc.), but because the number of clusters ended up being fixed (more on this later), a fixed number of features here gave the most consistent results:
+  Along the way, I did need to cut the hundreds of different user tags down to a more meaningful list to create a reasonable feature set for clustering.  There were a lot of more dynamic ways I tried doing this (tags held by x% of artists, cumulative total count threshold, top tags per artist, etc.), but because the number of clusters ended up being fixed (more on this later), a fixed number of features here gave the most consistent results:
 
   {% highlight python %}
 artist_tags_long = []                              
@@ -577,7 +577,7 @@ plt.show()
 
   <figure>
     <img src="{{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/kmeans_elbowresults.png">
-    <figcaption>Elbow method results to identify optimum number of clusters</figcaption>
+    <figcaption>Elbow method results identifying optimum number of clusters</figcaption>
   </figure>
   
   Originally, the plan was to implement a full elbow method on each user's results and carry on with an optimum cluster size.  This was swapped for a fixed "20 clusters" in the final version because: 1) There was a pretty small "acceptable" range of clusters that balanced meaningful groupings and readability of later results, and 2) The Streamlit server is much slower than my laptop and this took ages to calculate.<br><br>
