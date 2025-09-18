@@ -202,7 +202,7 @@ figure {
   img,
   iframe,
   .fluid-width-video-wrapper {
-    margin-bottom: 1em;
+    margin-bottom: 0.1em;
   }
 
   img {
@@ -246,7 +246,7 @@ figure {
 /* Figure captions */
 
 figcaption {
-  margin-bottom: 0.1em;
+  margin-bottom: 0.5em;
   color: $muted-text-color;
   font-family: $caption-font-family;
   font-size: $type-size-9;
