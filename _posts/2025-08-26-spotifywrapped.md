@@ -520,7 +520,7 @@ Using these user-generated tags, I then fit a clustering model to identify the c
 <figcaption>My top listening styles</figcaption>
 
 ![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/styles_sample.png)
-<figcaption>A sample of the artists making up my top styles - for how noisy the original data was I'm impressed with the fit!</figcaption>
+<figcaption>A sample of the artists making up my top styles - for how noisy the original data was, I'm impressed with the fit!</figcaption>
 
 <details>
   <summary>Full method for nerds like me (you were warned)</summary>
