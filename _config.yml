@@ -127,7 +127,7 @@ author:
       url: "https://www.linkedin.com/in/hayden-estabrook/"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      url: "https://github.com/hestabroo"
+      #url: "https://github.com/hestabroo"
 
 # Site Footer
 footer:
