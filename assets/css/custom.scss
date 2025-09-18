@@ -1,9 +1,6 @@
 ---
 ---
-body {
-  color: #FF0000;  /*test*/
-}
-
+//adding some final formatting overrides because I can't be fucked to find them in _sass
 .post-content p {
   font-size: 0.8em !important;
 }
@@ -11,7 +8,7 @@ body {
 details {
   font-size: 0.7em;
   font-weight: 300;
-  color: ##263238;
+  color: #263238;
 }
 
 details summary {
