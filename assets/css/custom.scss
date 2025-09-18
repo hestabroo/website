@@ -8,9 +8,13 @@ body {
   font-size: 0.8em !important;
 }
 
-details, details summary {
-  font-size: 0.7em !important;
-  font-weight: 300 !important;
-  color: #0000FF !important;
+details {
+  font-size: 0.7em;
+  font-weight: 300;
+  color: ##263238;
+}
+
+details summary {
+  color: #54e851;
 }
 
