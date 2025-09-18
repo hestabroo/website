@@ -4,14 +4,19 @@ title: "Spotify Wrapped+"
 post_header: true
 subtitle: "Creating an easy, interactive tool to analyze *all-time* Spotify listening trends"
 excerpt: "Creating an easy, interactive tool to analyze *all-time* Spotify listening trends"
-author_profile: false
+author_profile: true
 tags: [Machine Learning, Dashboards]
-image: "/assets/project_assets/20250826_spotifywrapped/spotifywraped_app_screenshot.png"
+image: "assets/project_assets/20250826_spotifywrapped/spotifywraped_app_screenshot.png"
 date: 2025-08-26
 ---
-![Landing page for the "Spotify Wrapped+" app](assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
+<figure>
+  <img src="assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png">
+  <figcaption>
+    Landing page for the Spotify Wrapped+ app
+  </figcaption>
+</figure>
 
-*tl;dr Check out [this neat tool](https://haydenestabrook-spotifywrapped.streamlit.app/) I built to analyze your all-time Spotify listening history!*
+*tl;dr Check out [this neat tool](https://haydenestabrook-spotifywrapped.streamlit.app/) I built to analyze your all-time Spotify listening history!  Read on below for an embarassing exposé of my personal music listening.*
 
 ## Intro
 Music is a huge part of my life, and as someone obsessed with data it should surprise no one that I love Spotify Wrapped season every December.  I love the opportunity to see what my friends have been listening to, discover new artists, and enjoy the embarassing outings of everyone's guilty pleasure songs. 
