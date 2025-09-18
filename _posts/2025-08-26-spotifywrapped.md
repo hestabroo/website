@@ -10,9 +10,7 @@ image: "{{ site.baseurl }}/assets/project_assets/20250826_spotifywrapped/spotify
 date: 2025-08-26
 ---
 ![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
-<figcaption>
-  Landing page for the Spotify Wrapped+ app
-</figcaption>
+<figcaption>Landing page for the Spotify Wrapped+ app</figcaption>
 
 *tl;dr: Check out [this neat tool](https://haydenestabrook-spotifywrapped.streamlit.app/) I built to analyze your all-time Spotify listening history!  Read on below for an embarassing exposé of my personal music listening.*
 
@@ -99,15 +97,22 @@ The Extended Streaming History comes as a zipped json package, and was honestly 
 ## The Analysis
 First up was the basics.  Critical as I was of Spotify only really doing the "top 10s", obviosuly it's something users will want to see, and a pretty cool thing to see across *all time*.  I tried to add a little more info around how many cumulative hours have been spent listening to each track/artist, as well as the "peak listening periods" for each:
 
-![My top artists...](/assets/projects/20250811_spotifywrapped_siteassets/topartists_table.png)
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/topartists_table.png)
+<figcaption>My top artists...</figcaption>
 
-![...and top songs.  For the uninitated, The Dirty Nelsons is the band I drum in... embarassing.](/assets/projects/20250811_spotifywrapped_siteassets/topsongs_table.png)
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/topsongs_table.png)
+<figcaption>...and top songs.  For the uninitated, The Dirty Nelsons is the band I drum in... embarassing.</figcaption>
 
 <details>
   <summary>Full code for nerds</summary>
-  Don't need to bore you with the basics of finding top artists/tracks.  Only interesting thing here was the identification of a "peak listening window".  A bit arbitrarily, I defined this to be the smallest possible window containing at least 50% of the artist's playtime.  
+  I don't need to bore you with the basics of finding top artists/tracks.  Only interesting thing here was the identification of a "peak listening window".  A bit arbitrarily, I defined this to be the smallest possible window containing at least 50% of the artist's playtime.  
   
-  At first I tried to do this by iteratively "shrinking" the full date, dropping the lowest-volume end - but this greedy logic got hung up on local peaks.  I ended up looping through each possible window start point and extending *outwards* until 50% was captured, and finding the best (smallest) window that achieved this.
+  At first I tried to do this by iteratively "shrinking" the full date, dropping the lowest-volume end - but this greedy logic got hung up on local peaks.  I ended up looping through each possible window start point and extending *outwards* until 50% was captured, and finding the best (smallest) window that achieved this.<br><br>
+
+  single br test<br>
+  doube br test <br><br>
+  double space test  
+  end
 </details>
 
 
