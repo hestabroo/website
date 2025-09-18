@@ -41,7 +41,7 @@ layout: default
           <h4 id="page-subtitle" class="page__subtitle">
             {{ page.subtitle | markdownify | remove: "<p>" | remove: "</p>" }}
           </h4>
-          (% endif %}
+          {% endif %}
           
           {% include page__meta.html %}
         </header>
