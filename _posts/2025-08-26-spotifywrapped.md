@@ -10,18 +10,18 @@ image: "assets/project_assets/20250826_spotifywrapped/spotifywraped_app_screensh
 date: 2025-08-26
 ---
 <figure>
-  <img src="assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png">
+  <img src="{{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png">
   <figcaption>
     Landing page for the Spotify Wrapped+ app
   </figcaption>
 </figure>
 
-![](/assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
+![]({{ site.url }}{{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
 <figcaption>
   Landing page for the Spotofy Wrapped+ app
 </figcaption>
 
-![](assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
 <figcaption>
   Landing page for the Spotofy Wrapped+ app
 </figcaption>
