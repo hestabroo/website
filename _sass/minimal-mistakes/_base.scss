@@ -62,10 +62,11 @@ h6 {
 
 he_subtitle {  //this is hayden's custom subtitle class
   margin: 0 0 1em;
-  font-size: $h-size-6;
+  font-size: $type-size-6;
   font-family: $header-font-family;
   color: $muted-text-color;
-  font-weight: 600;
+  font-weight: 500;
+  line-height: 1;
 }
 
 small,
