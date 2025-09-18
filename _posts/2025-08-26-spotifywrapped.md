@@ -14,6 +14,8 @@ date: 2025-08-26
   Landing page for the Spotofy Wrapped+ app
 </figcaption>
 
+*tl;dr Check out [this neat tool](https://haydenestabrook-spotifywrapped.streamlit.app/) I built to analyze your all-time Spotify listening history!  Read on below for an embarassing exposé of my personal music listening.*
+
 <figure>
   <fig src="{{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png">
   <figcaption>
