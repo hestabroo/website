@@ -577,6 +577,7 @@ plt.show()
 
   <figure>
     <img src="{{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/kmeans_elbowresults.png">
+    <figcaption>Elbow method results to identify optimum number of clusters</figcaption>
   </figure>
   
   Originally, the plan was to implement a full elbow method on each user's results and carry on with an optimum cluster size.  This was swapped for a fixed "20 clusters" in the final version because: 1) There was a pretty small "acceptable" range of clusters that balanced meaningful groupings and readability of later results, and 2) The Streamlit server is much slower than my laptop and this took ages to calculate.<br><br>
@@ -598,6 +599,7 @@ plt.savefig("kmodel_fthmap.png")
 
   <figure>
     <img src="{{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/kmodel_fthmap.png">
+    <figcaption>Genre tag correlation on each of my 20 style clusters</figcaption>
   </figure>
   
   For the most part, there's at least one pretty dominant tag for each cluster.  I set up logic to name the clusters based on (up to) the top two most correlated tags.  I attempted to define a threshold (20% of maximum correlation) for a value tight enough to include in naming.  After that, I just mapped the cluster names back onto each artist in the original dataset:
