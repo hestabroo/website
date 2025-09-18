@@ -381,7 +381,7 @@ fig.show()
 
 
 
-The second cool thing we can do is create a heatmap for peak listening times!  In my case, I thought it was super cool that you can see me literally going to bed and waking up later on weekends, as well as that I apparently only tend to listen to music over lunch on Fridays:
+The second cool thing we can do is create a heatmap for peak listening times!  In my case, I thought it was super cool that you can see me literally going to bed and waking up later on weekends, as well as that I apparently only listen to music at lunch on Fridays:
 
 ![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/overall_hmap.png)
 <figcaption>Heatmap of my peak times listening to music</figcaption>
@@ -459,7 +459,7 @@ Spotify's developer portal has a bunch of great APIs for querying genre and sent
   Last.fm's TopArtistTags API returns a dictionary of user tags attributed to artists, sorted and scored by relative usage.  To be kind on the API, I only called this info for artists making up the top 90% of playtime:
 
   {% highlight python %}
-API_key = 'I'll keep this to myself :)'
+API_key = "I'll keep this to myself :)"
 url = 'http://ws.audioscrobbler.com/2.0/'
 
 params = {
@@ -514,13 +514,13 @@ artist_tags = artist_tags.fillna(0)
 
 
 
-Using these user-generated tags, I then fit a clustering model to identify the core musical styles that describe a user's dominant listening styles.  If you're a nerd like me, there's a doozy of a dropdown here on how exactly I got this model to give good classifications, but the "so what" is that it condenses the thousands of user-generated tags into a small handful of meaningful styles:
+Using these user-generated tags, I then fit a clustering model to identify the core musical styles that describe a user's dominant listening styles.  If you're a nerd like me, there's a doozy of a dropdown here on how exactly I got this model to give good classifications - but the "so what" is that it condenses the thousands of user-generated tags into a small handful of meaningful style categories:
 
 ![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/styles_pie.png)
 <figcaption>My top listening styles</figcaption>
 
 ![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/styles_sample.png)
-<figcaption>A sample of the top artists making up some of my top listening styles</figcaption>
+<figcaption>A sample of the artists making up my top styles - for how noisy the original data was I'm impressed with the fit!</figcaption>
 
 <details>
   <summary>Full method for nerds like me (you were warned)</summary>
