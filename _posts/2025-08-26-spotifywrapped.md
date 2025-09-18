@@ -93,9 +93,16 @@ The Extended Streaming History comes as a zipped json package, and was honestly 
   
 </details>
 
+
 ## The Analysis
 ### Top Artists/Tracks
 First up was the basics.  Critical as I was of Spotify only really doing the "top 10s", obviosuly it's something everyone want to see, and a pretty cool thing to see across *all time*.  I tried to add a little more info around how many cumulative hours have been spent listening to each track/artist, as well as the "peak listening periods" for each:
+
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/topartists_table.png)
+<figcaption>My all-time top artists</figcaption>
+
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/topsongs_table.png)
+<figcaption>And my all-time most-listened songs... For the uninitated, The Dirty Nelsons is the band I drum in... embarassinggg</figcaption>
 
 <details>
   <summary>Full code for nerds</summary>
@@ -137,13 +144,10 @@ artists['peak_range'] = top_ranges
 {% endhighlight %}
 </details>
 
-![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/topartists_table.png)
-<figcaption>My all-time top artists</figcaption>
-
-![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/topsongs_table.png)
-<figcaption>And my all-time most-listened songs... For the uninitated, The Dirty Nelsons is the band I drum in... embarassinggg</figcaption>
-
 In addition to the pure Top 10, I also wanted to try to tease out tracks and artists that have had *consistent* playtime throughout your life (or, your life on Spotify at least).  I suppose unsurprisingly in retrospect, there weren't that many hits for songs that have had consistent playtime over a user's **entire** time on Spotify, so I decided to just call out the top one for each.  For me, the results made a lot of sense and was cool to see how this highlighted a song that wasn't even in my Top 5:
+
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/themesong_text.png)
+<figcaption>My most consistently listened song, displayed in the application's Top Songs header text</figcaption>
 
 <details>
   <summary>Full code for nerds</summary>
@@ -152,43 +156,48 @@ In addition to the pure Top 10, I also wanted to try to tease out tracks and art
   Approach was just to blow out songs and artists into a full grid of each month and rank medians.  For obvious reasons, medians of zero are excluded:
   
   {% highlight python %}
-#what was your most CONSISTENT song?
-full_songs = pd.DataFrame({'song_name': streamhx['song_name'].unique()})
-full_grid = full_months.merge(full_songs, how="cross")
-
-song_months = streamhx.groupby(['song_name', 'month_start'], as_index=False).agg(ct=('ts', 'count'), hr_played=('hr_played', 'sum'))
-song_months = full_grid.merge(song_months, how="left", on=['month_start', 'song_name'])
-song_months = song_months.fillna(0)
-
-song_rank = song_months.groupby('song_name', as_index=False)['hr_played'].median()
-song_rank = song_rank.sort_values('hr_played', ascending=False)
-song_rank = song_rank[song_rank['hr_played']>0]  #ignore median 0
-
-goto_song = song_rank.head(1)['song_name'].iloc[0]
-goto_songartist = songs[songs['song_name']==goto_song].head(1)['artist_name'].iloc[0]
-{% endhighlight %}
-
-Recognizing that zeros were being excluded and that may mean some users don't get any hits here - I coded this as an optional output in the app that only shows where applicable:
-
-{% highlight python %}
-##Top Songs##
-_optionalphrase = ""
-if len(goto_song)>0: _optionalphrase = f"Your theme song for the past {datayears} years has been **{goto_song}** by **{goto_songartist}**.  While it may not have been your most played, this is the song you've listened to the most consistently through it all.  "
-
-st.header("Top Tracks")
-st.write(f"Out of the {streamhx['song_name'].nunique():,} unique songs you've listened to, a few were certainly your favourites.  "
-         f"{_optionalphrase}"
-         "Check out the full list of your top tracks below:"
-         )
-st.dataframe(df_topsongs_display, height=387)
-{% endhighlight %}
+  #what was your most CONSISTENT song?
+  full_songs = pd.DataFrame({'song_name': streamhx['song_name'].unique()})
+  full_grid = full_months.merge(full_songs, how="cross")
+  
+  song_months = streamhx.groupby(['song_name', 'month_start'], as_index=False).agg(ct=('ts', 'count'), hr_played=('hr_played', 'sum'))
+  song_months = full_grid.merge(song_months, how="left", on=['month_start', 'song_name'])
+  song_months = song_months.fillna(0)
+  
+  song_rank = song_months.groupby('song_name', as_index=False)['hr_played'].median()
+  song_rank = song_rank.sort_values('hr_played', ascending=False)
+  song_rank = song_rank[song_rank['hr_played']>0]  #ignore median 0
+  
+  goto_song = song_rank.head(1)['song_name'].iloc[0]
+  goto_songartist = songs[songs['song_name']==goto_song].head(1)['artist_name'].iloc[0]
+  {% endhighlight %}
+  
+  Recognizing that zeros were being excluded and that may mean some users don't get any hits here - I coded this as an optional output in the app that only shows where applicable:
+  
+  {% highlight python %}
+  ##Top Songs##
+  _optionalphrase = ""
+  if len(goto_song)>0: _optionalphrase = f"Your theme song for the past {datayears} years has been **{goto_song}** by **{goto_songartist}**.  While it may not have been your most played, this is the song you've listened to the most consistently through it all.  "
+  
+  st.header("Top Tracks")
+  st.write(f"Out of the {streamhx['song_name'].nunique():,} unique songs you've listened to, a few were certainly your favourites.  "
+           f"{_optionalphrase}"
+           "Check out the full list of your top tracks below:"
+           )
+  st.dataframe(df_topsongs_display, height=387)
+  {% endhighlight %}
 </details>
 
-![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/themesong_text.png)
-<figcaption>My most consistently listened song, displayed in the application's Top Songs header text</figcaption>
 
 ### Trending Artists
 The second thing I wanted to do to take this a bit deeper was show the full historical listening relationship with each top artist.  The analysis was like it sounds, but it was very neat to see the ebbs and flows with each artist.  Specifically for me, it was super cool to see how my peak listening with each artist aligned with their major album releases:
+
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/topartists_chart.png)
+<figcaption>My all-time historical listening trends with each of my top artists</figcaption>
+
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/1975_trendalbums.png)
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/osooso_trendalbums.png)
+<figcaption>Two really cool examples where you can see how my listening for The 1975 and Oso Oso peaked with each new album release</figcaption>
 
 <details>
   <summary>Full code for nerds</summary>
@@ -226,15 +235,12 @@ for f in [fig.update_xaxes, fig.update_yaxes]:  #iteratiely update both axis
     {% endhighlight %}
 </details>
 
-![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/topartists_chart.png)
-<figcaption>My all-time historical listening trends with each of my top artists</figcaption>
-
-![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/1975_trendalbums.png)
-![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/osooso_trendalbums.png)
-<figcaption>Two really cool examples where you can see how my listening for The 1975 and Oso Oso peaked with each new album release</figcaption>
 
 ### Musical "Binges"
 Another thing I wanted to do here was to call out those times we all get obsessed with one song for a week or two.  This is probably my favourite section of the whole analysis, as for me it was simultaneously a fun trip down memory lane for songs I've absolutely loved, and a super embarassing exposé of guilty pleasures.  The high-level design here was to create a table for each song's plays per week and identify an "outlier" threshold for the music binges to highlight on the list:
+
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/obsessions.png)
+<figcaption>...Mortifying.  I can vividly remember each of these weeks lol</figcaption>
 
 <details>
   <summary>Full code for nerds</summary>
@@ -273,8 +279,6 @@ obsessions
 {% endhighlight %}
 </details>
 
-![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/obsessions.png)
-<figcaption>...Mortifying.  I can vividly remember each of these weeks lol</figcaption>
 
 ## Overall Listening Patterns
 
