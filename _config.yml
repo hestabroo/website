@@ -121,13 +121,13 @@ author:
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
-      #url: "mailto:hayden.estabrook@gmail.com"
+      url: "mailto:hayden.estabrook@gmail.com"
     - label: "LinkedIn"
       icon: "fab fa-linkedin"
-      #url: "https://www.linkedin.com/in/hayden-estabrook/"
+      url: "https://www.linkedin.com/in/hayden-estabrook/"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      #url: "https://github.com/hestabroo"
+      url: "https://github.com/hestabroo"
 
 # Site Footer
 footer:
