@@ -17,7 +17,7 @@ date: 2025-08-26
 
 
 ## Intro
-Music is a huge part of my life, and as someone obsessed with data it should surprise no one that I love Spotify Wrapped season every December.  I love the opportunity to see what my friends have been listening to, discover new artists, and enjoy the embarassing outings of everyone's guilty pleasure songs. 
+Music is a huge part of my life, so as someone obsessed with data it should surprise no one that I love Spotify Wrapped season every December.  I love the opportunity to see what my friends have been listening to, discover new artists, and enjoy the embarassing outings of everyone's guilty pleasure songs. 
 
 *However*, I've always felt like the Wrapped summary you get each year is quite surface level, and it felt like a miss given the wealth of data Spotify has that they don't really go beyond "top 10 tracks/artists".  SO, I set out to make a "better" Spotify Wrapped that can go deeper into your personal listening style and look more broadly outside the vacuum of the past 12 months.
 
@@ -639,6 +639,198 @@ graph_clusters = _cumpct[_cumpct<=0.9].index  #only include categories that expl
 graph_clusters = [c for c in graph_clusters if c != 'Other']  #don't bother showing that "other" either if it shows up
   {% endhighlight %}
 </details>
+
+
+
+
+
+
+As before, we can trend a users relative playtime across each of these style categories.  In my case, it was really interesting to see my style evolve over time - specifically my on-again-off-again relationship with Punk Rock and a recent trend towards more "easy listening" music:
+
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/styles_trend.png)
+<figcaption>Historical trend in my listening styles over the past nine years</figcaption>
+
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/styleeasy_trend.png)
+<figcaption>My recent trend towards more "easy listening" - in my chill era I suppose</figcaption>
+
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/styleangsty_trend.png)
+<figcaption>My inner teenager occasionally breaking through...</figcaption>
+
+<details>
+  <summary>Full code</summary>
+  Really nothing special here, plotly again and another 6mo avg. to smooth:
+  
+  {% highlight python %}
+_grp = streamhx.groupby(by=['month_start', 'cluster_name'], as_index=False)['hr_played'].sum()
+
+#for smooth 6mo avgs, will need to fill in missing months per cluster
+months = streamhx['month_start'].unique()
+#just top 10?
+_climit = 100
+clusters = graph_clusters
+
+full_index = [[c, m] for c in clusters for m in months]
+cluster_months = pd.DataFrame(full_index, columns=['cluster_name', 'month_start'])
+cluster_months = cluster_months.merge(_grp, on=['cluster_name', 'month_start'])
+cluster_months = cluster_months.fillna(0)
+
+cluster_months['weekly_hrs'] = cluster_months['hr_played']/4.3
+
+_clustorder = cluster_months.groupby('cluster_name')['hr_played'].sum().sort_values(ascending=False).index
+cluster_months['cluster_name'] = pd.Categorical(cluster_months['cluster_name'], categories=_clustorder, ordered=True)
+
+cluster_months = cluster_months.sort_values(['cluster_name', 'month_start'])
+cluster_months['6mo_avg'] = (
+    cluster_months.groupby('cluster_name', observed=False)['weekly_hrs'].transform(lambda x: x.rolling(window=6).mean())
+)
+
+cluster_months['6mo_pct'] = cluster_months['6mo_avg'] / cluster_months['month_start'].map(cluster_months.groupby('month_start')['6mo_avg'].sum())
+
+_colors = sns.color_palette('Paired', len(clusters)).as_hex()
+
+fig=px.area(
+    cluster_months,
+    x='month_start',
+    y='6mo_pct',
+    color='cluster_name',
+    line_shape = 'spline',
+    color_discrete_sequence=_colors,
+    labels = {
+        'month_start': 'Month',
+        '6mo_pct': 'Pct. Listening',
+        'cluster_name': 'Genre'
+    },
+    hover_data={'6mo_pct':':.0%'}  #set formatting for hover
+)
+
+fig.update_traces(line_width=0.5)
+fig.update_layout(height=500)
+fig.update_layout(plot_bgcolor='white', xaxis_title='')
+fig.update_yaxes(tickformat='.0%', range = [0,1])
+
+for f in [fig.update_xaxes, fig.update_yaxes]:  #iteratiely update both axis
+    f(gridcolor='gainsboro', griddash='dot', gridwidth=0)
+fig.show()
+  {% endhighlight %}
+</details>
+
+
+
+
+
+And for one final trick: I was interested to see if I could visualize time of day relationships a user has with each of their listening styles.  I wanted to visualize "what you're usually listening to" at each point in the day, as well as highlight interesting cases where a style is mostly listened to at a specific time of day.  For me, the standout trends to note were "Pop Punk in the evenings" (and as the weekend approaches) and "Folk exclusively in the morning":
+
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/styles_overallhmap.png)
+<figcaption>At each point in the day, what I'm usually listening to - unsurprisingly, the top style dominates</figcaption>
+
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/emppoppunk_hmap.png)
+<figcaption>My hourly relationship with Emo/Pop Punk music - notably in the evenings and sneaking into the workday as the weekend approaches</figcaption>
+
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/folk_hmap.png)
+<figcaption>My hourly relationship with Folk - notably more or less the polar opposite of Emo/Pop Punk</figcaption>
+
+<details>
+  <summary>Full code and method</summary>
+  To spin up these visuals, the first step was to make a "heatmap" per style of hourly listening volumes.  I also established baseline overall percentages for each style so that we can calculate "deviation from norm" later on:
+
+  {% highlight python %}
+#patterns in predominant style by time of day?
+streamhx_topc = streamhx[streamhx['cluster_name'].isin(graph_clusters)]
+_tots = streamhx_topc.groupby('cluster_name')['hr_played'].sum()
+baseline = _tots / _tots.sum()
+
+#for each cluster, what's its pct by weekday / hour?
+hrly_tots = {}
+for c in graph_clusters:
+    _df = streamhx[streamhx['cluster_name']==c]
+    _hmap = _df.pivot_table(index='hour', columns='weekday', values='hr_played', aggfunc='sum')
+    _hmap = _hmap.reindex(  #ensure all have all col/rows and in same order
+        index=range(0,24), 
+        columns=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    )
+    _hmap = _hmap.fillna(0)
+    hrly_tots[c] = _hmap
+
+hrly_denom = streamhx_topc.pivot_table(index='hour', columns='weekday', values='hr_played', aggfunc='sum')
+hrly_denom = hrly_denom.reindex(
+    index=range(0,24), 
+    columns=['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+)
+  {% endhighlight %}
+
+
+  I did the calculations required for both charts above in one pass, analyzing the "percent overall" per style (Chart 1) as well as the "deviation from norm" (Chart 2).  For deviation from norm, I used a z-score based on the acutal hours played in that hour compared to what we would expect to see with completely uniform distribution of that style's playtime.  I also calculated some other options to play around with - including rolling window values to smooth out single-hour spikes.  Ultimately the rolling window z-score was used for Chart 2:
+  
+  {% highlight python %}
+  hrly_styles = {}
+  for c, hmap in hrly_tots.items():   
+      _pct = hmap / hrly_denom
+      _diff = _pct / baseline[c] - 1
+      
+      _expected = hrly_denom * baseline[c]
+      _zscore = (hmap - _expected) / np.sqrt(_expected)   # (observed-expected)/sqrt(expected)  (raw cts, not %)
+      
+      hrly_styles[c] = {
+          'overall_pct': _pct,
+          'pct_diff': _diff,
+          'rolling_pctdiff': _diff.T.rolling(window=4, min_periods=1).mean().T,  #axis=1 deprecated here,
+          'zscore': _zscore,
+          'rolling_zscore': _zscore.T.rolling(window=3, min_periods=1).mean().T
+      }
+  {% endhighlight %}
+  
+  Lastly, not every style has interesting trends by hour.  I set up the app to only display the five most interesting ones by ranking the <em>sum</em> of absolute z-scores per hour:
+
+  {% highlight python %}
+#find the most interesting style pattern
+_targ = 'rolling_zscore'
+_ztot = [hrly_styles[s][_targ].abs().sum().sum() for s in hrly_styles]
+_zrank = np.flip(np.argsort(_ztot))  #no reverse/ascending param in argsort
+
+f_topztrends = {}
+for s in _zrank[:5]:  #print the top 5 trends
+    _style = list(hrly_styles)[s]
+    
+    cmap = LinearSegmentedColormap.from_list("name", [(0,'red'), (0.4,'whitesmoke'), (0.6,'whitesmoke'), (1,'green')])
+    hmap = hrly_styles[_style][_targ].copy()
+    hmap.index = hmap.index.map(timelabels)
+    
+    fig, ax = plt.subplots()
+    ax = sns.heatmap(hmap, cmap=cmap, center=0, vmin=-2, vmax=2, ax=ax)
+    ax.add_patch(wkday_patch())
+    ax.add_patch(wkend_patch())
+    ax.add_patch(border_patch())
+    ax.set_xlabel('')
+    ax.set_ylabel('')
+
+    cbar = ax.collections[0].colorbar  #override with generic labels, don't get into explaining zscores
+    cbar.set_ticks([-2, 0, 2])
+    cbar.set_ticklabels(["Less Than Usual", "Typical", "More Than Usual"])
+
+    f_topztrends[_style] = fig
+  {% endhighlight %}
+</details>
+
+
+
+
+
+
+
+And that's the project!  Head on over to [the Streamlit app](https://haydenestabrook-spotifywrapped.streamlit.app/) and try it out with your own data!  If you don't already have your Extended Streaming History (why would you), there's help text on the landing page to walk you through it.  If you find anything neat or interesting in your results, I'd love to see it - get in touch!
+
+
+
+## Final Thoughts
+This project was an absolute blast to build.  It was super cool to get to dive deep into my musical past, and specifically being able to see signals of major life events and changes being reflected in my music listening activity.  Obviously, there's always infinitely more that can be done on a project like this.  In terms of where I would develop it further or what I would do differently if I were to do it again:
+
+- **More Dynamic Model Parameters**: While I tried to make the parameters for tag cleansing, style clustering, and highlighting cutoffs as dynamic as possible, I only had access to my own data at the time.  A lot of setting these parameters felt quite unscientific in the sense of "fiddling with it until it felt right to me".  I would have loved to have multiple datasets to compare between and establish some more objective measures for results that "felt cool".
+- **Including Additional Feature Tags**: With access to Spotify's developer APIs cut off, I felt quite handicapped in the types of higher level generalizations I could make about listening data.  I would have loved to pull in additional feature sets for things like popularity, emotion, energy level, musical age/era, newness to user, etc. to express listening styles in more ways than just genre.  That said, it was super cool to see a coherent message come out of such messy, open-sourced data.
+- **Profiles and Deviations**: On a similar note, with more comprehensive data on the "types" of music users were listening to, I think it could be really cool to assign overall "profiles" (e.g. "Crunchy Granola", "The Hipster", "Top 40s Fan", "Angsty Teen"), as well as highlight things they listen to that *don't* fit the mold (e.g. "Wow, I wouldn't have expected you to listen to this much Jazz").
+- **More Comparison Between Time Periods**: While the all-time view is super cool, it could also be neat to present similar analytics for a *recent* window (e.g. last 12mo like traditional Wrapped), and highlight how the user's listening last year matched or deviated from past trends ("This year your tastes were much more adventurous", "This year you regressed to old favourites from high school").
+- **Most Skipped/Dislikes**: This whole analysis focuses on what users *did* listen to, it could be cool to look at what they didn't.  Obviously much harder to pin down, but it could be cool to look at users' most skipped songs, or things with low play we'd expect to be higher (e.g. "You did not seem to care for Twenty One Pilots' new album this year").
+
+
 
 
 
