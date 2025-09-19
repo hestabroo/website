@@ -1,8 +1,10 @@
 ---
 ---
 //adding some final formatting overrides because I can't be fucked to find them in _sass
-.page__content p {
-  font-size: 0.9em;
+.page__content {
+  p, ul, li {
+    font-size: 0.9em;
+  }
 }
 
 .page__content details {
