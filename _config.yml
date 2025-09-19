@@ -236,7 +236,7 @@ pagination:
   sort_field: 'date'
   sort_reverse: true
   category: 'posts'
-  tag: ''
+  tag: 'posts'
   locale: ''
   trail:
     before: 2
