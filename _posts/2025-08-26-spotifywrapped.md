@@ -718,7 +718,7 @@ fig.show()
 
 
 
-And for one final trick: I was interested to see if I could visualize time of day relationships a user has with each of their listening styles.  I wanted to visualize "what you're usually listening to" at each point in the day, as well as highlight interesting cases where a style is mostly listened to at a specific time of day.  For me, the standout trends to note were "Pop Punk in the evenings" (and as the weekend approaches) and "Folk exclusively in the morning":
+And for one final trick - I was interested to see if I could visualize time of day relationships a user has with each of their listening styles.  I wanted to visualize "what you're usually listening to" at each point in the day, as well as highlight interesting cases where a style is mostly listened to at a specific time of day.  For me, the standout trends to note were "Pop Punk in the evenings" (and as the weekend approaches) and "Folk exclusively in the morning":
 
 ![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/styles_overallhmap.png)
 <figcaption>At each point in the day, what I'm usually listening to - unsurprisingly, the top style dominates</figcaption>
@@ -829,6 +829,9 @@ This project was an absolute blast to build.  It was super cool to get to dive d
 - **Profiles and Deviations**: On a similar note, with more comprehensive data on the "types" of music users were listening to, I think it could be really cool to assign overall "profiles" (e.g. "Crunchy Granola", "The Hipster", "Top 40s Fan", "Angsty Teen"), as well as highlight things they listen to that *don't* fit the mold (e.g. "Wow, I wouldn't have expected you to listen to this much Jazz").
 - **More Comparison Between Time Periods**: While the all-time view is super cool, it could also be neat to present similar analytics for a *recent* window (e.g. last 12mo like traditional Wrapped), and highlight how the user's listening last year matched or deviated from past trends ("This year your tastes were much more adventurous", "This year you regressed to old favourites from high school").
 - **Most Skipped/Dislikes**: This whole analysis focuses on what users *did* listen to, it could be cool to look at what they didn't.  Obviously much harder to pin down, but it could be cool to look at users' most skipped songs, or things with low play we'd expect to be higher (e.g. "You did not seem to care for Twenty One Pilots' new album this year").
+
+Thanks again for checking this out!  See you in the next one,
+Hayden
 
 
 
