@@ -831,7 +831,10 @@ This project was an absolute blast to build.  It was super cool to get to dive d
 - **More Comparison Between Time Periods**: While the all-time view is super cool, it could also be neat to present similar analytics for a *recent* window (e.g. last 12mo like traditional Wrapped), and highlight how the user's listening last year matched or deviated from past trends ("This year your tastes were much more adventurous", "This year you regressed to old favourites from high school").
 - **Most Skipped/Dislikes**: This whole analysis focuses on what users *did* listen to, it could be cool to look at what they didn't.  Obviously much harder to pin down, but it could be cool to look at users' most skipped songs, or things with low play we'd expect to be higher (e.g. "You did not seem to care for Twenty One Pilots' new album this year").
 
-Thanks again for checking this out!  See you in the next one,
+Thanks again for checking this out!  
+
+See you in the next one,
+
 Hayden
 
 
