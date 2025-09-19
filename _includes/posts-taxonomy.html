@@ -10,7 +10,7 @@
     {% for item in include.taxonomies %}
       {% if item[1].size == i %}
         <li>
-          <a href="{{ site.baseurl }}/tags/{{ item[0] | slugify }}/">  <!--Hayden changed this from "<a href="#{{ item[0] | slugify }}">" -->
+          <a href="#{{ item[0] | slugify }}">
             <strong>{{ item[0] }}</strong> <span class="taxonomy__count">{{ i }}</span>
           </a>
         </li>
@@ -20,7 +20,6 @@
 </ul>
 
 
-<!--  Hayden is commenting this out... will it work????
 {% assign entries_layout = page.entries_layout | default: 'list' %}
 {% for i in (1..items_max) reversed %}
   {% for taxonomy in include.taxonomies %}
@@ -37,4 +36,3 @@
     {% endif %}
   {% endfor %}
 {% endfor %}
--->
