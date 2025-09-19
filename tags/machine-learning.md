@@ -1,6 +1,6 @@
 ---
 layout: tag
-title: "Machine Learning Projects:"
-permalink: /tags/#machine-learning
+title: "Projects Featuring Machine Learning:"
+permalink: /tags/machine-learning
 taxonomy: Machine Learning
 ---
