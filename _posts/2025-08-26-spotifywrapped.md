@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: single
 title: "Spotify Wrapped+"
 post_header: true
 subtitle: "Creating an easy, interactive tool to analyze *all-time* Spotify listening trends"
