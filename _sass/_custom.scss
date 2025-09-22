@@ -56,19 +56,3 @@
   }
 }
 
-//override archive grids to be x1 on mobile, x2 on tablet, x3 on desktop (not 4) - this uses a more modern framework than susy (MM built on)
-.entries-grid {
-  display: grid;
-  gap: 2rem;
-
-  grid-template-columns: 1fr; // default mobile
-
-  @media (min-width: 600px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (min-width: 900px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
