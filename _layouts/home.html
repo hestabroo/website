@@ -11,7 +11,7 @@ layout: archive
   
   <div class="featured-tags__grid">    
     {% for tag in page.featured_tags %}
-      <a href="{{ tag.link }}" class="featured-tag">
+      <a href="{{ site.baseurl }}{{ tag.link }}" class="featured-tag">
         <img src="{{ tag.image | relative_url }}" alt="{{ tag.name }}">
         <span class="featured-tag__label">{{ tag.name }}</span>
       </a>
