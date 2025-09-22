@@ -6,7 +6,8 @@ subtitle: "Creating an easy, interactive tool to analyze *all-time* Spotify list
 excerpt: "Creating an easy, interactive tool to analyze *all-time* Spotify listening trends"
 author_profile: false
 tags: [Machine Learning, Dashboards]
-teaser: /assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png
+header:
+  teaser: /assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png
 date: 2025-08-26
 ---
 
