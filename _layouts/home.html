@@ -6,10 +6,10 @@ layout: archive
 
 {% if page.featured_tags %}
 <section class="featured-tags">
-  <div class="featured-tags__grid">
-    
-    <h3 class="archive__subtitle">{{ "Featured Tags" }}</h3>
-    
+  
+  <div><h3 class="archive__subtitle">{{ "Featured Tags" }}</h3></div>
+  
+  <div class="featured-tags__grid">    
     {% for tag in page.featured_tags %}
       <a href="{{ tag.link }}" class="featured-tag">
         <img src="{{ tag.image | relative_url }}" alt="{{ tag.name }}">
