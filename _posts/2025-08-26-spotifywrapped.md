@@ -7,7 +7,7 @@ excerpt: "Creating an easy, interactive tool to analyze *all-time* Spotify liste
 author_profile: false
 tags: [Machine Learning, Dashboards]
 thumbnail: /assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png
-image: thumbnail: /assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png
+image: /assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png
 date: 2025-08-26
 ---
 
