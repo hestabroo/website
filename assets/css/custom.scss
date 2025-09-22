@@ -23,9 +23,16 @@
 .featured-tags__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  gap: 3rem;
   justify-items: center;
   align-items: start;
   margin-bottom: 2rem;
+}
+
+.featured-tags__label {
+  font-weight: 400;
+  margin: 0.25rem 0 0;
+  font-size: $type-size-5;
+  color: $muted-text-color;
 }
 
