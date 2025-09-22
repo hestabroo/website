@@ -833,9 +833,7 @@ This project was an absolute blast to build.  It was super cool to get to dive d
 
 Thanks again for checking this out!  
 
-See you in the next one,
-
-Hayden
+See you in the next one,<br>Hayden
 
 
 
