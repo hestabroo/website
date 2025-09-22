@@ -56,3 +56,10 @@
   }
 }
 
+
+.archive__item .page__date {  //format custom date fields on archive items
+  margin: 0 0 0;
+  color: $muted-text-color;
+  font-size: $type-size-7;
+}
+
