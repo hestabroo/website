@@ -20,3 +20,12 @@
   color: #A9B5BB;
 }
 
+.featured-tags__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  justify-items: center;
+  align-items: start;
+  margin-bottom: 2rem;
+}
+
