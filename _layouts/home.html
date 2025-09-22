@@ -4,14 +4,18 @@ layout: archive
 
 {{ content }}
 
-<div class="featured-tags__grid">
+{% if page.featured_tags %}
+<section class="featured-tags">
+  <div class="featured-tags__grid">
     {% for tag in page.featured_tags %}
-    <a href="{{ tag.link }}" class="featured-tag">
-      <img src="{{ tag.image | relative_url }}" alt="{{ tag.name }}">
-      <span class="featured-tag__label">{{ tag.name }}</span>
-    </a>
-  {% endfor %}
-</div>
+      <a href="{{ tag.link }}" class="featured-tag">
+        <img src="{{ tag.image | relative_url }}" alt="{{ tag.name }}">
+        <span class="featured-tag__label">{{ tag.name }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
   
 
 <h3 class="archive__subtitle">{{ site.data.ui-text[site.locale].recent_posts | default: "Recent Posts" }}</h3>
