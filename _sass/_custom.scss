@@ -27,17 +27,6 @@
   margin-bottom: 2rem;
 }
 
-.featured-tag img {
-  max-width: 6rem;
-  opacity: 0.7;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.featured-tag:hover img {
-  opacity: 1;
-  transform: scale(1.05);
-}
-
 .featured-tag {
   display: flex;
   flex-direction: column;
@@ -48,5 +37,18 @@
   color: $muted-text-color;
   text-align: center;
   text-decoration: none;
+
+  img {
+    max-width: 6rem;
+    opacity: 0.7;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  &:hover img {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  &:visited {
+    color: $muted-text-color;  //don't change color after visited
+  }
 }
 
