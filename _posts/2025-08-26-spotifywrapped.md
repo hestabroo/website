@@ -10,10 +10,11 @@ categories: [Machine Learning, Dashboards]
 image: "{{ site.baseurl }}/assets/project_assets/20250826_spotifywrapped/spotifywraped_app_screenshot.png"
 date: 2025-08-26
 ---
-![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
-<figcaption>Landing page for the Spotify Wrapped+ app</figcaption>
 
 *tl;dr: Check out [this neat tool](https://haydenestabrook-spotifywrapped.streamlit.app/) I built to analyze your all-time Spotify listening history!  Read on below for an embarassing exposé of my personal music listening.*
+
+![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
+<figcaption>Landing page for the Spotify Wrapped+ app</figcaption>
 
 
 
