@@ -8,7 +8,7 @@ author_profile: false
 tags: [Geospatial Analysis]
 header:
   teaser: /assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png
-date: 2025-08-26
+date: 2025-09-10
 ---
 
 testy tests!
