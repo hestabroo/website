@@ -9,7 +9,6 @@ author_profile: false
 tags: [Machine Learning, Dashboards]
 header:
   teaser: /assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png
-  image: /assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png
 ---
 
 *tl;dr: Check out [this neat tool](https://haydenestabrook-spotifywrapped.streamlit.app/) I built to analyze your all-time Spotify listening history!  Read on below for an embarassing exposé of my personal music listening.*
