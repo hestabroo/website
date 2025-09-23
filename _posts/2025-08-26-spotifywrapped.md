@@ -1,6 +1,7 @@
 ---
 layout: single
 title: "Spotify Wrapped+"
+date: 2025-08-26
 post_header: true
 subtitle: "An easy, interactive tool to analyze *all-time* Spotify listening trends"
 excerpt: "An easy, interactive tool to analyze *all-time* Spotify listening trends"
@@ -8,7 +9,7 @@ author_profile: false
 tags: [Machine Learning, Dashboards]
 header:
   teaser: /assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png
-date: 2025-08-26
+show_header: true
 ---
 
 *tl;dr: Check out [this neat tool](https://haydenestabrook-spotifywrapped.streamlit.app/) I built to analyze your all-time Spotify listening history!  Read on below for an embarassing exposé of my personal music listening.*
