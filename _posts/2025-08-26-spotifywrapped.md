@@ -2,8 +2,8 @@
 layout: single
 title: "Spotify Wrapped+"
 post_header: true
-subtitle: "Creating an easy, interactive tool to analyze *all-time* Spotify listening trends"
-excerpt: "Creating an easy, interactive tool to analyze *all-time* Spotify listening trends"
+subtitle: "An easy, interactive tool to analyze *all-time* Spotify listening trends"
+excerpt: "An easy, interactive tool to analyze *all-time* Spotify listening trends"
 author_profile: false
 tags: [Machine Learning, Dashboards]
 header:
