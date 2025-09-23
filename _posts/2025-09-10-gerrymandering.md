@@ -24,7 +24,7 @@ Leading up to the 2016 U.S. elections, North Carolina's popular vote was relativ
 In the lead up to the election, Republican Rep. David Lewis was famously cited as saying "I propose that we draw the maps to give a partisan [10-3 split], because I **do not believe it's possible to draw a map with [an 11-2 split]**."  ...I don't know about you, but that sounds like a challenge to me!
 
 <br>
-<figcaption>*I feel obliged here to give a disclaimer that in the real world, I am not remotely in favour of partisan gerrymandering, and my intention with this project is to gamify and illustrate the absurdity of the concept.  Here in Canada, our election maps are drawn by joint panels of statisticians and retired judges - which, when you hear it, wow that makes so much more sense eh?</figcaption>
+<figcaption>*I feel obliged here to give a disclaimer that in the real world, I am not remotely in favour of partisan gerrymandering, and my intention with this project is to gamify and illustrate the absurdity of the concept.  Here in Canada, our election maps are drawn by joint panels of statisticians and retired judges - which, when you hear it, wow that makes so much more sense, eh?</figcaption>
 
 
 
@@ -145,12 +145,13 @@ Okay - so how to start approaching a problem like this?  This simple-sounding pr
 
 - Allocate the existing area of North Carolina into 13 ~equally sized districts
 - Maintain geographical contiguity across each of the 13 districts
-- Produce "reasonable enough looking" geometries 
+- Produce "reasonable looking" geometries 
 - Achieve a "safe" majority election win for Republicans in 11 of the 13 districts
 
 <details>
   <summary>Full definitions (for nerds)</summary>
-  For "equally sized", I deferred to the official districts for an acceptable range of variation - which was 323k-409k votes per district.  Similarly, I deferred to the used district mapping for what lawmakers at the time considered a "safe" majority - in this case the lowest-performing Republican district won with a 52.3% margin (I did end up aiming a little higher). 
+  For "equally sized", I deferred to the official districts for an acceptable range of variation - which was 323k-409k votes per district.<br><br>  
+  Similarly, I deferred to the official election results for what lawmakers at the time considered a "safe" majority - in this case the lowest-performing Republican district won with a 52.3% margin (I did end up aiming a little higher given my benefit of hindsight). 
 </details>
 
 
@@ -209,13 +210,6 @@ with warnings.catch_warnings():
             lambda x: pd.Series({"pct_dem": x['total_democratic'].sum() / x['combined_total_votes'].sum()})
         )  #only storing 1D array, important  #default sorting is by index ascending (just remember index is 0-12 not 1-13)
         district_results.append(np.array(_newresults['pct_dem']))
-
-        #testing#################
-
-        _test = _moving_results.groupby('district')['combined_total_votes'].sum()
-        test_total_cts.append(np.array(_test))
-
-        #########################
     
         if _%1000==0:
             print(f"{_} complete, {len(district_assignments)} successful")
@@ -225,31 +219,34 @@ print(f"all complete, {len(district_assignments)} successful")
 np.savez_compressed("montecarloresults_npzip", district_assignments=district_assignments, district_results=district_results)  #final save
   {% endhighlight %}
 
-  Clearly, this did not work for multiple reasons.  Specifically for contiguity though, the issue was the assumption that a bordering precinct could always be moved without breaking contiguity.  If the percincts were a grid of perfect squares (how I drew them when I came up with this lol) it would be fine, but with complex real geometries a precinct can touch the border of a district while still being integral for continuity.  Once contiguity is broken once, the effect cascades as now the "island" starts trying to grab precincts bordering it.
+  Clearly, this did not work for multiple reasons.  Specifically for contiguity though, the issue was the assumption that a bordering precinct could always be moved without breaking contiguity.  If the precincts were a grid of perfect squares (how I drew them when I came up with this lol) it would be fine, but with complex real geometries, a precinct can touch the border of a district while still being integral for continuity.  Once contiguity is broken once, the effect cascades as now the "island" starts trying to grab precincts bordering it.
 </details>
 
 
 
 
 
-As you can probably see, this didn't work.  The first obvious problem was that my rule for maintaining contiguity was a little too soft (and once contiguity breaks once, the problem cascades as the "district" tries to grow).  But, the bigger problem was runtime.  After running for nine hours, the district map had not changed that significantly.  Some quick back of the envelope math revealed that, with 2,700 precincts, the number of valid maps was likely to the magnitude of **1e100+** and trying to find them all through brute force was not going to be realistic.
+As you can probably see, this didn't work.  The first obvious problem was that my rule for maintaining contiguity was a little too soft, but the bigger problem was runtime.  After running for nine hours, the district map had not changed that significantly.  Some quick back of the envelope math revealed that, with 2,700 precincts, the number of valid maps was likely in the magnitude of **1e100+**, and trying to find them all through brute force was not going to be realistic.
 
 
 
 
 ### Attempt #2: Targeted Construction
-Given the massive number of potential solutions and the heavy computation required to manipulate these contiguous geometries, I realized I was going to need to be a lot more targeted in my approach.  My second idea was that I would simply nail it the first time, and build a map from scratch.  The core idea of gerrymandering is "packing and cracking" - i.e. consolidating all of your opponents votes into a small number of districts where they win with an excessive majority ("packing"), and then diluting the rest of their votes across the remaining districts such that they *just marginally* lose in each.
+Given the massive number of potential solutions and the heavy computation required to manipulate these contiguous geometries, I realized I was going to need to be a lot more targeted in my approach.  My second idea was that I would simply nail it the first time, and build a map from scratch.  
 
-Conceptually, my strategy was to first pack then crack - presuming that as long as I could sufficiently pack two districts, the remaining 11 would be easy (*spoiler - they were not*).  I let the high-level demographics inform the targets for each stage.  Overall, Republicans held **53%** of the popular vote.  Therefore, in order to secure a 57% victory in 11 of the 13 districts, the *remaining* two districts would need to be about **70% Democratic**.
+The core idea of gerrymandering is "packing and cracking" - i.e. consolidating all of your opponents votes into a small number of districts where they win with an excessive majority ("packing"), and then diluting the rest of their votes across the remaining districts such that they *just marginally* lose in each.  
 
-#### Packing!
+Conceptually, my strategy was to first pack then crack - presuming that as long as I could sufficiently pack two districts, the remaining 11 would be easy (*spoiler - they were not*).  I let the high-level demographics inform the targets for each stage.  Overall, Republicans held **53%** of the popular vote.  Therefore, in order to secure a 57% victory in 11 of the 13 districts, the remaining two districts would need to be about **70% Democratic**.
+
+##### Packing!
 So - how to find legal districts that are comprised of 70% Democratic voters?  My approach was to, like a sculptor, start with the entire "block" of the state and intelligently whittle it down until only a highly condensed district remains.  If you're a nerd like me who cares, the full specifics of this logic and development process are below, but after several iterations I was able to achieve a successful 70% result:
 
 ![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/loserdistrict1-ezgif.com-speed.gif)
-<figcaption>The first successful "pack"!  And automated whittling down of a 70% Democratic district in North Carolina</figcaption>
+<figcaption>The first successful "pack"!  Creation of a 70% Democratic district</figcaption>
 
 <details>
   <summary>Full code and method for nerds like me</summary>
+  WRITE ME
 </details>
 
 
@@ -258,21 +255,44 @@ So - how to find legal districts that are comprised of 70% Democratic voters?  M
 
 
 
-Now, all that was left was to do it again!  In reality, this process involved a lot of back and forth between the two districts to ensure that the first wasn't "too greedy" and sufficient valid options remained for the second.  But, after a lot of failed attempts and overnight runs we had two valid districts averaging 68.6% Democratic each:
+Now, all that was left was to do it again!  In reality, this process involved a lot of back and forth between the two districts to ensure that the first wasn't "too greedy" and sufficient valid options remained for the second.  But, after a lot of failed attempts and overnight runs we had two valid districts averaging **69% Democratic**:
 
 ![]({{ sute.baseurl }}/assets/projects/20250910_gerrymandering/loserdistrict2-ezgif.com-speed.gif)
 <figcaption>Construction of the second Democratic district</figcaption>
 
 <details>
   <summary>Full method</summary>
-  <img src = "{{ site.baseurl }}/assets/projects/20250910_gerrymandering/doitagain.jpeg">
+  <img src = "{{ site.baseurl }}/assets/projects/20250910_gerrymandering/doitagain.jpeg" width=50%>
 </details>
 
 
 
 
-#### Cracking!
 
+
+##### Cracking!
+Okay - so now the easy part right?  Having constructed two 69% Democratic districts, the remaining state averages **57% Republican**, so it should just be a simple exercise of divvying it up.  It was not.  Perhaps unsurprisingly, the local concentrations of Republican votes and the constraints of maintaining contiguity as the map filled in made this extremely difficult (specifically for the later districts).
+
+Again, if you're nerdy like me there's a full outline of the method below, but the high-level approach I employed here is probably the same one a five year-old would - to just start at the left and carefully add one adjoining precinct at a time.  Obviously, there were some iterations on this approach and a couple clever tricks for deciding which precinct to add next.  After probably way too many attempts and iterations, I was able to get pretty close - although the Republican margin on the 13th district wasn't quite as "safe" as I wanted it to be:
+
+![]({  site.baseurl }}/assets/projects/20250910_gerrymandering/winnerdistricts-ezgif.com-speed.gif)
+<figcaption>Construction of the remaining 11 Republican districts</figcaption>
+
+![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/beforeswapresults.png)
+<figcaption>2016 NC House election results using the 13 districts above</figcaption>
+
+<details>
+  <summary>Full code and method for nerds like me</summary>
+  WRITE ME
+</details>
+
+
+
+
+
+
+### Attempt 2.5: Monte Carlo?
+After probably far too long of beating my head against the wall trying to get the first pass above to be perfect, I decided to revisit our old friend Monte Carlo.
 
 
 
