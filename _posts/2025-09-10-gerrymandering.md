@@ -159,7 +159,7 @@ Okay - so how to start approaching a problem like this?  This simple-sounding pr
 ### Attempt #1: Full Monte Carlo
 My first theory for solving this was that: if I just randomly modified the starting district map while maintaining size and contiguity requirements, I would eventually discover every possible legal configuration and could then just pick my favourite.  I set up a script to run through this overnight and got the following:
 
-![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/20250828_MonteCarlo_gif_5xspeed.gif)
+![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/20250828_MonteCarlo_gif_5xspeed-ezgif.com-crop)
 <figcaption>Attempt #1 at using a Monte Carlo method to rnadomly iterate through possible configurations... not super successful</figcaption>
 
 
@@ -226,7 +226,7 @@ np.savez_compressed("montecarloresults_npzip", district_assignments=district_ass
 
 
 
-As you can probably see, this didn't work.  The first obvious problem was that my rule for maintaining contiguity was a little too soft, but the bigger problem was runtime.  After running for nine hours, the district map had not changed that significantly.  Some quick back of the envelope math revealed that, with 2,700 precincts, the number of valid maps was likely in the magnitude of **1e100+**, and trying to find them all through brute force was not going to be realistic.
+As you can probably see, this didn't work.  The first obvious problem was that my rule for maintaining contiguity was a little too soft (and quickly spiraled out of control), but actually the bigger problem was runtime.  After running for nine hours, the district map had not changed that significantly.  Some quick back of the envelope math revealed that, with 2,700 precincts, the number of valid maps was likely in the magnitude of **1e100+**, and trying to find them all through brute force was not going to be realistic.
 
 
 
