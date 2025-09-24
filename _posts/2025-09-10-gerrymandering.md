@@ -13,7 +13,7 @@ date: 2025-09-10
 
 *tl;dr: I tried my hand at "packing and cracking" state districts in an attempt to out-gerrymander north Carolina Republicans for the 2016 House election.  Check out my final district map below, and read on for the full method to develop this process.*
 
-<iframe src="{{ site.baseurl }}/assets/projects/20250910_gerrymandering/finalmap.html" height=400 width=100%></iframe>
+<iframe src="{{ site.baseurl }}/assets/projects/20250910_gerrymandering/finalmap.html" height="400" width="100%"></iframe>
 <figcaption>My final district map to achieve an 11-2 Republican majority in the 2016 North Carolina House election</figcaption>
 
 
@@ -257,12 +257,12 @@ So - how to find legal districts that are comprised of 70% Democratic voters?  M
 
 Now, all that was left was to do it again!  In reality, this process involved a lot of back and forth between the two districts to ensure that the first wasn't "too greedy" and sufficient valid options remained for the second.  But, after a lot of failed attempts and overnight runs we had two valid districts averaging **69% Democratic**:
 
-![]({{ sute.baseurl }}/assets/projects/20250910_gerrymandering/loserdistrict2-ezgif.com-speed.gif)
+![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/loserdistrict2-ezgif.com-speed.gif)
 <figcaption>Construction of the second Democratic district</figcaption>
 
 <details>
   <summary>Full method</summary>
-  <img src = "{{ site.baseurl }}/assets/projects/20250910_gerrymandering/doitagain.jpeg" width=50%>
+  <img src = "{{ site.baseurl }}/assets/projects/20250910_gerrymandering/doitagain.jpeg" width="50%">
 </details>
 
 
