@@ -11,7 +11,7 @@ header:
 date: 2025-09-10
 ---
 
-*tl;dr: I tried my hand at "packing and cracking" state districts in an attempt to out-gerrymander north Carolina Republicans for the 2016 House election.  Check out my final district map below, and read on for the full method to develop this process.*
+*tl;dr: I tried my hand at "packing and cracking" state districts in an attempt to out-gerrymander North Carolina Republicans for the 2016 House election.  Check out my final district map below, and read on for the full method to develop this process.*
 
 ![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/finalmap.png)
 <figcaption>My final district map to achieve an 11-2 Republican majority in the 2016 North Carolina House election</figcaption>
@@ -21,7 +21,9 @@ date: 2025-09-10
 ## Background
 Leading up to the 2016 U.S. elections, North Carolina's popular vote was relatively 50/50 between Democrats and Republicans, and historically the state's House representation had been evenly split between the two parties.  In the lead up to the 2016 election, Republican lawmakers managed to pass a gerrymandered redistricting map that led Republicans to secure a 10-3 victory in the 2016 House election.  In 2018, the 10-3 district map was struck down by U.S. Federal courts, who deemed it an unconstitutional partisan gerrymander.  The case has widely been criticized as an aggregious example of partisan gerrymandering, and an example of gerrymandering's negative impact on fair democratic process.
 
-In the lead up to the election, Republican Rep. David Lewis was famously cited as saying "I propose that we draw the maps to give a partisan [10-3 split], because I **do not believe it's possible to draw a map with [an 11-2 split]**."  ...I don't know about you, but that sounds like a challenge to me!
+In the lead up to the election, Republican Rep. David Lewis was famously cited as saying "I propose that we draw the maps to give a partisan [10-3 split], because I **do not believe it's possible to draw a map with [an 11-2 split]**."
+
+I don't know about you, but that sounds like a challenge to me!
 
 <br>
 <figcaption>*I feel obliged here to give a disclaimer that in the real world, I am not remotely in favour of partisan gerrymandering, and my intention with this project is to gamify and illustrate the absurdity of the concept.  Here in Canada, our election maps are drawn by joint panels of statisticians and retired judges - which, when you hear it, wow that makes so much more sense, eh?</figcaption>
@@ -36,13 +38,13 @@ First thing needed to start this was the 2016 election results.  I recognize thi
 Compiling the dataset involved mapping the MEDSL election results onto the VEST precinct geometries.  I had to make a couple assumptions to do this (outlined below), but then we were off to the races!  Below is the official "10-3" district mapping that was used in the 2016 election, as well as a heatmap and results from each district:
 
 ![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/basemap.png)
-<figcaption>Official district mapping for the 2016 North Carolina House election</figcaption>
+<figcaption>Official district mapping used for the 2016 North Carolina House election</figcaption>
 
 ![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/basemapresults.png)
 <figcaption>2016 election results from the official North Carolina district mapping</figcaption>
 
-<iframe src="{{ site.baseurl }}/assets/projects/20250910_gerrymandering/baseheatmap.html" height="400" width="100%"></iframe><br>
-<figcaption>Heatmap of compiled 2016 election data showing geographic voter composition</figcaption>
+<iframe src="{{ site.baseurl }}/assets/projects/20250910_gerrymandering/baseheatmap.html" height="400" width="100%"></iframe>
+<figcaption>Interactive heatmap of compiled 2016 election data showing geographic voter composition</figcaption>
 
 
 
@@ -234,14 +236,12 @@ As you can probably see, this didn't work.  The first obvious problem was that m
 
 
 ### Attempt #2: Targeted Construction
-Given the massive number of potential solutions and the heavy computation required to manipulate these contiguous geometries, I realized I was going to need to be a lot more targeted in my approach.  My second idea was that I would simply nail it the first time, and build a map from scratch.  
+Given the massive number of potential solutions and the heavy computation required to manipulate these geometries, I realized I was going to need to be a lot more targeted in my approach.  My second idea was that I would simply nail it the first time, and build a map from scratch.  
 
-The core idea of gerrymandering is "packing and cracking" - i.e. consolidating all of your opponents votes into a small number of districts where they win with an excessive majority ("packing"), and then diluting the rest of their votes across the remaining districts such that they *just marginally* lose in each.  
-
-Conceptually, my strategy was to first pack then crack - presuming that as long as I could sufficiently pack two districts, the remaining 11 would be easy (*spoiler - they were not*).  I let the high-level demographics inform the targets for each stage.  Overall, Republicans held **53%** of the popular vote.  Therefore, in order to secure a 57% victory in 11 of the 13 districts, the remaining two districts would need to be about **70% Democratic**.
+The core idea of gerrymandering is "packing and cracking" - i.e. consolidating all of your opponents votes into a small number of districts where they win with an excessive majority ("packing"), and then diluting the rest of their votes across the remaining districts such that they *just marginally* lose in each.  Conceptually, my strategy was to first pack then crack.  My presumption was that as long as I could sufficiently pack two districts, the remaining 11 would be easy (*spoiler - they were not*).  I let the high-level results inform the targets for each stage.  Overall, Republicans held **53%** of the popular vote.  Therefore, in order to secure a 57% victory in 11 districts, the remaining two districts would need to be about **70% Democratic**.
 
 ##### Packing!
-So - how to find legal districts that are comprised of 70% Democratic voters?  My approach was to, like a sculptor, start with the entire "block" of the state and intelligently whittle it down until only a highly condensed district remains.  If you're a nerd like me who cares, the full specifics of this logic and development process are below, but after several iterations I was able to achieve a successful 70% result:
+So - how to find legal districts that are comprised of 70% Democratic voters?  My approach was to, like a sculptor, start with the entire "block" of the state and slowly whittle it down until only a highly condensed district remains.  If you're a nerd like me, the full specifics of this logic and development process are below, but after several iterations I was able to achieve a successful 70% result:
 
 ![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/loserdistrict1-ezgif.com-speed.gif)
 <figcaption>The first successful "pack"!  Creation of a 70% Democratic district</figcaption>
@@ -256,54 +256,54 @@ So - how to find legal districts that are comprised of 70% Democratic voters?  M
   Fundamentally, the idea was to start with a GeoDataFrame of all available precincts and to iteratively drop precincts until a legal district remained. At each iteration, I would identify the precincts that bordered the outer perimeter of the remaining geometry as candidates to be dropped:
 
   {% highlight python %}
-  target = 0.30
+target = 0.30
 
-  _available = optimized_districts[optimized_districts['district']==0].copy()  #initially, everything is an option for d1
-  _currgeom = _available.union_all()  #this will permanently house the unioned geometry (to avoid recalc)
+_available = optimized_districts[optimized_districts['district']==0].copy()  #initially, everything is an option for d1
+_currgeom = _available.union_all()  #this will permanently house the unioned geometry (to avoid recalc)
+
+print(f"[{datetime.datetime.now():%I:%M:%S %p}] start")
+
+_c = 1  #count loops   
+while not (_available['combined_total_votes'].sum() <= dmax and pcttarget(_available) <= target):
+    _border = _currgeom.boundary
+    _touchmask = _available.geometry.intersects(_border)
   
-  print(f"[{datetime.datetime.now():%I:%M:%S %p}] start")
-  
-  _c = 1  #count loops   
-  while not (_available['combined_total_votes'].sum() <= dmax and pcttarget(_available) <= target):
-      _border = _currgeom.boundary
-      _touchmask = _available.geometry.intersects(_border)
-    
-      _edgeprecs = _available[_touchmask]  #available edge pieces
-  
-      if len(_edgeprecs)==0:  #if there's nothing left to legally drop
-          print(f"no solution found ({_c-1} iterations)")
-          break
+    _edgeprecs = _available[_touchmask]  #available edge pieces
+
+    if len(_edgeprecs)==0:  #if there's nothing left to legally drop
+        print(f"no solution found ({_c-1} iterations)")
+        break
   {% endhighlight %}
 
 
 
-  Next, I calculated a "score" for each precinct describing how beneficial dropping it would be to the remaining district.  My goal was to create a scoring metric that would balance getting the district to the target demographic, while also maintaining a "reasonable looking" geometry.  For "reasonable looking", I used a metric I dubbed "branchyness", which is the ratio of the geometry's permimeter (squared to maintain units) over area.  More perimeter per area = less square of a shape.<br><br>
+  Next, I calculated a "score" for each precinct describing how beneficial dropping it would be to the remaining district.  My goal was to create a scoring metric that would balance getting the district to the target demographic, while also maintaining a "reasonable looking" geometry.  For "reasonable looking", I used a metric I dubbed "branchyness", which is the ratio of the geometry's permimeter (squared to maintain units) over area.  More perimeter per area = weirder shape.<br><br>
   
-  For getting to target demographic, I just calculated what the percent Republican makeup of the remaining district would be without this precinct.  To have this balance with the "branchyness" metric, I squared the <em>difference</em> from target.  This meant that when the district was close to demographic target, the impact would be small and the overall scoring would prioritize creating an intuitive geometry - but when the district was far from demogrphic target, the squared difference would balloon and dominate.<br><br>
+  For getting to target demographic, I just calculated what the percent Republican makeup of the remaining district would be without this precinct.  To have this balance with the "branchyness" metric, I <strong>squared</strong> the difference from target.  This meant that when the district was close to demographic target, the metric would be near-zero and the overall scoring would prioritize creating an intuitive geometry - but when the district was far from demogrphic target, the squared difference would balloon and dominate.<br><br>
 
-  I also included a bit of a "look-ahead" score, which was the same as above but considered everything within several kilometers of each precinct.  This helped the algorithm avoid local maximums and prioritize dropping precincts from <em>general areas</em> that were advantageous.  I set this look-ahead score to gradually shrink as the district closed in on its final area.<br><br>
+  I also included a bit of a "look-ahead" score, which was the same as above but considered everything within several kilometers of each precinct.  This helped the algorithm avoid local maximums and prioritize <em>general areas</em> that were advantageous.  I set this look-ahead distance to gradually shrink as the district closed in on its final area.<br><br>
 
   Putting it all together:
 
   {% highlight python %}
-            _sortscores = [] #[idx, score, geomin]
-            for i in _edgeprecs.index:
-                _igeom = _available.loc[i].geometry
-                _geomin = _currgeom.difference(_igeom)
-                _branchyness = _geomin.length**2 / _geomin.area
+_sortscores = [] #[idx, score, geomin]
+for i in _edgeprecs.index:
+    _igeom = _available.loc[i].geometry
+    _geomin = _currgeom.difference(_igeom)
+    _branchyness = _geomin.length**2 / _geomin.area
 
-                _t = 30e3 * (_available['combined_total_votes'].sum()-323e3) / 4e6  #lookahead distance shrinks as it gets smaller (starts ~4.5M votes)
-                minx, miny, maxx, maxy = _igeom.bounds
-                _fastbuffer = (minx-_t, miny-_t, maxx+_t, maxy+_t)  #apparently much faster than .buffer(10e3)
+    _t = 30e3 * (_available['combined_total_votes'].sum()-323e3) / 4e6  #lookahead distance shrinks as it gets smaller (starts ~4.5M votes)
+    minx, miny, maxx, maxy = _igeom.bounds
+    _fastbuffer = (minx-_t, miny-_t, maxx+_t, maxy+_t)  #apparently much faster than .buffer(10e3)
+
+    _touchi = _available.iloc[_available.sindex.intersection(_fastbuffer)]  #do this touchi thing again
+    _ipct, _touchipct = pcttarget(_available.drop(i)), pcttarget(_available.drop(_touchi.index))
+    _ipctscore, _touchipctscore = abs(_ipct - target)**2*1e4, abs(_touchipct - target)**2*1e4
     
-                _touchi = _available.iloc[_available.sindex.intersection(_fastbuffer)]  #do this touchi thing again
-                _ipct, _touchipct = pcttarget(_available.drop(i)), pcttarget(_available.drop(_touchi.index))
-                _ipctscore, _touchipctscore = abs(_ipct - target)**2*1e4, abs(_touchipct - target)**2*1e4
-                
-                _sortscore = _branchyness + _ipctscore + 0.5*_touchipctscore
-                _sortscores.append([i, _sortscore, _igeom])
-            
-            _sortscores = sorted(_sortscores, key=lambda x: x[1])  #lowest score at the top - these are ones where dropping produces a better (lower score) result
+    _sortscore = _branchyness + _ipctscore + 0.5*_touchipctscore
+    _sortscores.append([i, _sortscore, _igeom])
+
+_sortscores = sorted(_sortscores, key=lambda x: x[1])  #lowest score at the top - these are ones where dropping produces a better (lower score) result
   {% endhighlight %}
 
 
@@ -311,54 +311,54 @@ So - how to find legal districts that are comprised of 70% Democratic voters?  M
 
   Next was legality checks.  Basically, the idea was to take the most favourably-scored precinct and validate that dropping it would not break contiguity or exceed our allowable district size.  If either was violated, the precinct would be flagged as "illegal" so it wouldn't be prioritized next time - otherwise, the precinct would be dropped from the district.<br><br>
 
-  I added a clause that if a desirable precinct to drop divided the remaining district (broke contiguity), before calling the drop illegal it would first consider the possibility of dropping the <em>entire</em> fragmented branch.  You can see this happen a few times in the gif above.  I also added a clause to maintain contiguity of the <em>remaining</em> state geometry (to avoid sewering the later steps), however intentionally <strong>disabled</strong> this rule until the final iterations (remaining district <1M voters) to allow the algorithm to quickly drop from all ends at the beginning.  Again, in the gif above you can see where this rule kicks in and a previously dropped area is added <em>back in</em> to create contiguity of the remaining area.<br><br>
+  I added a clause that if a desirable precinct to drop divided the remaining district (broke contiguity), before calling the drop illegal it would first consider the possibility of dropping the <em>entire</em> fragmented branch.  You can see this happen a few times in the gif above.  I also added a clause to maintain contiguity of the <em>remaining</em> state geometry (to avoid sewering the later steps), however intentionally <strong>disabled</strong> this rule until the final iterations (<1M votes remain) to allow the algorithm to quickly drop from both ends at the beginning.  Again, in the gif above you can see where this rule kicks in and a previously dropped area is added <em>back in</em> to create contiguity of the remaining state.<br><br>
   
   To save runtime on the computationally-heavy previous scoring step above, I allowed the algorithm to drop more than just one precinct while it was at this step (in this case, up to the best-scored 50% of border precincts):
 
   {% highlight python %}
 _ndrop = max(int(len(_edgeprecs)*0.33), 1) #try some speed, drop x% of border or 1
         
-            for l in _sortscores[:_ndrop]:    
-                i = l[0]
-                if l[0] not in _available.index: continue  #in case idx dropped in branch, skip all 
-                
-                _igeom = l[2]
-                _geomin = _currgeom.difference(_igeom)  #**need to recalculate this!  with multiple dropped since scoring, it's out of date
-                if isinstance(_geomin, MultiPolygon): _validgeoms = [g for g in _geomin.geoms if g.area>23e3]  #some individual precs genuinely have slivers
+for l in _sortscores[:_ndrop]:    
+    i = l[0]
+    if l[0] not in _available.index: continue  #in case idx dropped in branch, skip all 
+    
+    _igeom = l[2]
+    _geomin = _currgeom.difference(_igeom)  #**need to recalculate this!  with multiple dropped since scoring, it's out of date
+    if isinstance(_geomin, MultiPolygon): _validgeoms = [g for g in _geomin.geoms if g.area>23e3]  #some individual precs genuinely have slivers
 
-                if _unifyremaining: #only calculate this when needed
-                    _geomout = _remaingeom.union(_igeom)  
-                    if isinstance(_geomout, MultiPolygon): _validout = [g for g in _geomout.geoms if g.area>23e3]  #same deal
-                
-                #----------legality checks:---------------------------
-                if _unifyremaining and isinstance(_geomout, MultiPolygon) and len(_validout)>1: markillegal(i, "fractures remaining")  #this one only gets checked at the end
-                
-                elif isinstance(_geomin, MultiPolygon) and len(_validgeoms)>1:  #if dropping this produces a multipolygon (ie fractures the contiguity)... don't immediately say the drop is illegal...
-                    if len(_validgeoms)>2: markillegal(i, "3+ polygons")  #don't bother with the complexity of 3+ polygons
-                    else:
-                        _poly1 = _available[_available.geometry.intersects(_validgeoms[0])]  #identify the two district polygons
-                        _poly2 = _available[_available.geometry.intersects(_validgeoms[1])]
+    if _unifyremaining: #only calculate this when needed
+        _geomout = _remaingeom.union(_igeom)  
+        if isinstance(_geomout, MultiPolygon): _validout = [g for g in _geomout.geoms if g.area>23e3]  #same deal
     
-                        if _poly1['combined_total_votes'].sum() > _poly2['combined_total_votes'].sum(): _bigger, _smaller = _poly1, _poly2
-                        else: _bigger, _smaller = _poly2, _poly1  #name them "bigger" and "smaller" for ease
+    #----------legality checks:---------------------------
+    if _unifyremaining and isinstance(_geomout, MultiPolygon) and len(_validout)>1: markillegal(i, "fractures remaining")  #this one only gets checked at the end
     
-                        _pctbigger = pcttarget(_bigger)  #pct dem in each for ease
-                        _pctsmaller = pcttarget(_smaller)
+    elif isinstance(_geomin, MultiPolygon) and len(_validgeoms)>1:  #if dropping this produces a multipolygon (ie fractures the contiguity)... don't immediately say the drop is illegal...
+        if len(_validgeoms)>2: markillegal(i, "3+ polygons")  #don't bother with the complexity of 3+ polygons
+        else:
+            _poly1 = _available[_available.geometry.intersects(_validgeoms[0])]  #identify the two district polygons
+            _poly2 = _available[_available.geometry.intersects(_validgeoms[1])]
+
+            if _poly1['combined_total_votes'].sum() > _poly2['combined_total_votes'].sum(): _bigger, _smaller = _poly1, _poly2
+            else: _bigger, _smaller = _poly2, _poly1  #name them "bigger" and "smaller" for ease
+
+            _pctbigger = pcttarget(_bigger)  #pct dem in each for ease
+            _pctsmaller = pcttarget(_smaller)
+
+            #run some checks to decide if i is illegal to remove, or we should gas the whole _smaller branch with it
+            if _bigger['combined_total_votes'].sum() < dmin: markillegal(i, "too small without branch")  #if removing this compromises dmin... can't do it
+            elif _pctsmaller < _pctbigger: markillegal(i, "branch closer to target")  #if the branch is higher % than the rest, leave it (coudl change later)
+            else: 
+                _todrop = [i] + list(_smaller.index)
+                for p in _todrop: dropprec(p, f"dropped with branch {i}")  #if not, drop it all
+                _currgeom = _bigger.union_all()
     
-                        #run some checks to decide if i is illegal to remove, or we should gas the whole _smaller branch with it
-                        if _bigger['combined_total_votes'].sum() < dmin: markillegal(i, "too small without branch")  #if removing this compromises dmin... can't do it
-                        elif _pctsmaller < _pctbigger: markillegal(i, "branch closer to target")  #if the branch is higher % than the rest, leave it (coudl change later)
-                        else: 
-                            _todrop = [i] + list(_smaller.index)
-                            for p in _todrop: dropprec(p, f"dropped with branch {i}")  #if not, drop it all
-                            _currgeom = _bigger.union_all()
-                
-                elif _available['combined_total_votes'].sum() - _available.loc[i]['combined_total_votes'] < dmin: 
-                    markillegal(i, "too small without individual")  #if dropping this compromises district size
-                
-                else: 
-                    dropprec(i, "")  #if no other issues, drop it like its hot!
-                    _currgeom = _geomin
+    elif _available['combined_total_votes'].sum() - _available.loc[i]['combined_total_votes'] < dmin: 
+        markillegal(i, "too small without individual")  #if dropping this compromises district size
+    
+    else: 
+        dropprec(i, "")  #if no other issues, drop it like its hot!
+        _currgeom = _geomin
   {% endhighlight %}
 
 
@@ -371,7 +371,6 @@ _ndrop = max(int(len(_edgeprecs)*0.33), 1) #try some speed, drop x% of border or
 #define functions used in the loops:
 def pcttarget(gdf):  #def for ease
     return gdf['total_'+target_party].sum() / gdf['combined_total_votes'].sum()
-
 
 def markillegal(idx, note):
     _illegal.append(idx)
@@ -391,10 +390,10 @@ def add2district(idx, note):
     log.append([d, _c, idx, 'added', note])
 
 
-    target = 0.27
+target = 0.27
 log = []  #items housed in the log will be of the format [district, iteration, index, "dropped/illegal", notes]
 
-for d in range(1,6): #districts 1-5
+for d in range(1,3): #districts 1-2
     _available = optimized_districts[optimized_districts['district']==0].copy()  #initially, everything is an option for d1
     _currgeom = _available.union_all()  #this will permanently house the unioned geometry (to avoid recalc)
     _startinggeom = _currgeom  #will use this when we get into calculating remaining geometry
@@ -878,7 +877,7 @@ print(distpcts)
 
 And with that, we have officially achieved the "impossible" 11-2 Republican split!  Below is the final district mapping and district election results for the 2016 NC House election:
 
-<iframe src="{{ site.baseurl }}/assets/projects/20250910_gerrymandering/finalmap.html" height="400" width="100%"></iframe><br>
+<iframe src="{{ site.baseurl }}/assets/projects/20250910_gerrymandering/finalmap.html" height="400" width="100%"></iframe>
 <figcaption>The final optimized district mapping to achieve an 11-2 Republican split in the 2016 NC House election</figcaption>
 
 ![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/finalmapresults.png)
