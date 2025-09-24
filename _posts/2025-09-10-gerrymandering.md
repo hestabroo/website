@@ -159,8 +159,8 @@ Okay - so how to start approaching a problem like this?  This simple-sounding pr
 ### Attempt #1: Full Monte Carlo
 My first theory for solving this was that: if I just randomly modified the starting district map while maintaining size and contiguity requirements, I would eventually discover every possible legal configuration and could then just pick my favourite.  I set up a script to run through this overnight and got the following:
 
-![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/20250828_MonteCarlo_gif_5xspeed-ezgif.com-crop)
-<figcaption>Attempt #1 at using a Monte Carlo method to rnadomly iterate through possible configurations... not super successful</figcaption>
+![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/20250828_MonteCarlo_gif_5xspeed-ezgif.com-crop.gif)
+<figcaption>Attempt #1 at using a Monte Carlo method to randomly iterate through possible configurations... not super successful</figcaption>
 
 
 
@@ -275,7 +275,7 @@ Okay - so now the easy part right?  Having constructed two 69% Democratic distri
 
 Again, if you're nerdy like me there's a full outline of the method below, but the high-level approach I employed here is probably the same one a five year-old would - to just start at the left and carefully add one adjoining precinct at a time.  Obviously, there were some iterations on this approach and a couple clever tricks for deciding which precinct to add next.  After probably way too many attempts and iterations, I was able to get pretty close - although the Republican margin on the 13th district wasn't quite as "safe" as I wanted it to be:
 
-![]({  site.baseurl }}/assets/projects/20250910_gerrymandering/winnerdistricts-ezgif.com-speed.gif)
+![]({ site.baseurl }}/assets/projects/20250910_gerrymandering/winnerdistricts-ezgif.com-speed.gif)
 <figcaption>Construction of the remaining 11 Republican districts</figcaption>
 
 ![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/beforeswapresults.png)
@@ -291,10 +291,33 @@ Again, if you're nerdy like me there's a full outline of the method below, but t
 
 
 
-### Attempt 2.5: Monte Carlo?
-After probably far too long of beating my head against the wall trying to get the first pass above to be perfect, I decided to revisit our old friend Monte Carlo.
+### Attempt 2.5: Monte Carlo Again??
+After probably far too long of beating my head against the wall trying to get the first pass above to be perfect, I decided to revisit our old friend Monte Carlo.  I realized that the target construction above was very close, and that the easiest thing might just be to employ a more targeted swapping approach to "clean up" the districts and get it across the line.  The full method is below, but the high-level approach was to idenitfy swaps that were *mutually beneficial* to the overall map, with the objective of getting all Republican districts to at least a 55% majority:
+
+![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/swapcleanup-ezgif.com-speed.gif)
+<figcaption>A final "swapping" cleanup on the district map to balance Republican margins</figcaption>
+
+<details>
+  <summary>Full code for nerds</summary>
+  WRITE ME
+</details>
 
 
+
+
+
+And with that, we have officially achieved the "impossible" 11-2 Republican split!  Below is the final district mapping and district election results for the 2016 NC House election:
+
+![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/finalmap.png)
+<figcaption>The final optimized district mapping to achieve an 11-2 Republican split in the 2016 NC House election</figcaption>
+
+![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/finalmapresults.png)
+<figcaption>2016 House election results by NC district using the optimized mapping - Republicans win in 11 of 13 districts with a margin or 55% or higher in each</figcaption>
+
+
+
+
+## Final Thoughts
 
 
 
