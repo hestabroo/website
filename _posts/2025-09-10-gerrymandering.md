@@ -249,7 +249,7 @@ So - how to find legal districts that are comprised of 70% Democratic voters?  M
 
 
 <details>
-  <summary>Full code and method for nerds like me</summary>
+  <summary>Full code and method (for nerds like me)</summary>
   The script that generated this is one big nasty loop, so I'll break down the core pieces then show the full code block.<br><br>
 
   Fundamentally, the idea was to start with a GeoDataFrame of all available precincts and to iteratively drop precincts until a legal district remained. At each iteration, I would identify the precincts that bordered the outer perimeter of the remaining geometry as candidates to be dropped:
@@ -308,11 +308,11 @@ _sortscores = sorted(_sortscores, key=lambda x: x[1])  #lowest score at the top 
 
 
 
-  Next was legality checks.  Basically, the idea was to take the most favourably-scored precinct and validate that dropping it would not break contiguity or exceed our allowable district size.  If either was violated, the precinct would be flagged as "illegal" so it wouldn't be prioritized next time - otherwise, the precinct would be dropped from the district.<br><br>
+  Next was legality checks.  Basically, the idea was to take the most favourably-scored precinct and validate that dropping it would not break contiguity or exceed our allowable district size.  If either was violated, the precinct would be flagged as "illegal" so it wouldn't be prioritized again next time - otherwise, the precinct would be dropped from the district.<br><br>
 
   I added a clause that if a desirable precinct to drop divided the remaining district (broke contiguity), before calling the drop illegal it would first consider the possibility of dropping the <em>entire</em> fragmented branch.  You can see this happen a few times in the gif above.  I also added a clause to maintain contiguity of the <em>remaining</em> state geometry (to avoid sewering the later steps), however intentionally <strong>disabled</strong> this rule until the final iterations (<1M votes remain) to allow the algorithm to quickly drop from both ends at the beginning.  Again, in the gif above you can see where this rule kicks in and a previously dropped area is added <em>back in</em> to create contiguity of the remaining state.<br><br>
   
-  To save runtime on the computationally-heavy previous scoring step above, I allowed the algorithm to drop more than just one precinct while it was at this step (in this case, up to the best-scored 50% of border precincts):
+  To save runtime on the computationally-heavy previous scoring step above, I allowed the algorithm to drop more than just one precinct while it was at this step (in this case, up to the best-scored 33% of border precincts):
 
   {% highlight python %}
 _ndrop = max(int(len(_edgeprecs)*0.33), 1) #try some speed, drop x% of border or 1
@@ -380,13 +380,6 @@ def dropprec(idx, note):
     _available.drop(idx, inplace=True)  #drop it from the df  #must use inplace modifiers from within this function
     _illegal.clear()  #wipe illegal as geom has changed (i know size ones could be left in here... but simplicity and we aren't going to hit that)
     log.append([d, _c, idx, 'dropped', note])
-
-def add2district(idx, note):
-    if idx not in _available.index: return
-    _district.append(idx)
-    _available.drop(idx, inplace=True)
-    _illegal.clear()
-    log.append([d, _c, idx, 'added', note])
 
 
 target = 0.27
@@ -552,7 +545,7 @@ Now, all that was left was to do it again!  In reality, this process involved a 
 ##### Cracking!
 Okay - so now the easy part right?  Having constructed two 69% Democratic districts, the remaining state averages **57% Republican**, so it should just be a simple exercise of divvying it up.  It was not.  Perhaps unsurprisingly, the local concentrations of Republican votes and the constraints of maintaining contiguity as the map filled in made this extremely difficult (specifically for the later districts).
 
-Again, if you're nerdy like me there's a full outline of the method below, but the high-level approach I employed here is probably the same one a five year-old would - to just start at the left and carefully add one adjoining precinct at a time.  Obviously, there were some iterations on this approach and a couple clever tricks for deciding which precinct to add next.  After probably way too many attempts and iterations, I was able to get pretty close - although the Republican margin on the 13th district wasn't quite as "safe" as I wanted it to be:
+Again, if you're nerdy like me there's a full outline of the method below, but the high-level approach I employed here is probably the same one a five year-old would - to just start at the edge and carefully add one adjoining precinct at a time.  Obviously, there were some iterations on this approach and a couple clever tricks for deciding which precinct to add next.  After probably way too many attempts and iterations, I was able to get pretty close - although the Republican margin on the 13th district wasn't quite as "safe" as I wanted it to be:
 
 ![]({{ site.baseurl }}/assets/projects/20250910_gerrymandering/winnerdistricts-ezgif.com-speed.gif)
 <figcaption>Construction of the remaining 11 Republican districts</figcaption>
@@ -562,12 +555,20 @@ Again, if you're nerdy like me there's a full outline of the method below, but t
 
 
 <details>
-  <summary>Full code and method for nerds like me</summary>
-  The logic here was more or less the same as "packing", just in reverse (adding, not dropping).  Because the code is so similar I won't go through each piece of it again.  Some notable quick changes: Because we are adding not dropping, there's no risk that adding a neighbouring precinct will break <em>internal</em> contiguity - so the check is only on external.  To minimize problems later on, "branchyness" was also calculated and scored for the <em>remaining</em> geometry.  Because the area we're working with of a single district is so much smaller, the initial scoring was no longer the bottleneck - therefore only the one top-scored option was dropped.  To save runtime on expensive geometry evaluations in legality checks, some of the objects calculated in the scoring stage were stored and passed for reuse in legality evaluation.<br><br>
+  <summary>Full code and method (for nerds like me)</summary>
+  The logic here was more or less the same as "packing", just in reverse (adding, not dropping).  Because the code is so similar I won't go through each piece of it again.  Some notable quick changes: Because we are adding not dropping, there's no risk that adding a neighbouring precinct will break <em>internal</em> contiguity - so the check is only on external.  To minimize problems later on, "branchyness" was also calculated and scored for the <em>remaining</em> geometry.  Because the single-district area we're working with is so much smaller, the initial scoring was no longer the performance bottleneck - therefore only the one top-scored option was dropped each iteration.  To save runtime on expensive geometry evaluations in legality checks, some of the objects calculated in the scoring stage were stored and passed for reuse in legality evaluation.<br><br>
 
-  This "cracking" stage did add one complexity of where to <em>start</em> each district.  I played around with a few options, including initially seeding intentionally difficult areas to try to get them out of the way while more options were available.  In the end, the addition of the final cleanup step (spoilers) meant the most important thing for the seeds was really just to avoid forcing awkward geometries by seeding in the middle of the map.  The seeds simply ping-pong from the left and right extremes (later geometries were more awkward if all seeded from the same direction):
+  This "cracking" stage did add one complexity of where to <em>start</em> each district.  I played around with a few options, including initially seeding intentionally difficult areas to try to get them out of the way while more options were available.  In the end, the addition of the final cleanup step (spoilers) meant the most important thing for the seeds was really just to avoid forcing awkward geometries by seeding in the middle of the map.  The final seeds simply ping-pong from the left and right extremes (later geometries were more awkward if all seeded from the same direction):
 
   {% highlight python %}
+def add2district(idx, note):
+    if idx not in _available.index: return
+    _district.append(idx)
+    _available.drop(idx, inplace=True)
+    _illegal.clear()
+    log.append([d, _c, idx, 'added', note])
+
+
 target = 0.55  #set this to what min will be in cleanup
 log = [] #items housed in the log will be of the format [district, iteration, index, "dropped/illegal", note]
 
