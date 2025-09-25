@@ -1,7 +1,7 @@
 ---
 layout: single
+sidebar: false
 title: "Gerrymandering!"
-post_header: true
 subtitle: 'Creating an automated method to achieve the "impossible" 11-2 NC split'
 excerpt: 'An automated method to achieve the "impossible" 11-2 NC split'
 author_profile: false
