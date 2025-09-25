@@ -38,64 +38,64 @@ The Extended Streaming History comes as a zipped json package, and was honestly 
   The app is hosted on Streamlit.  Very simple out-of-the-box file uploader and parsing of the zip:
   
   {% highlight python %}
-    st.write("")
-    st.subheader("File Upload")
-    zipobj = st.file_uploader(
-        "Upload your Spotify Extended Play History (.zip format).  Don't have your play history data yet? [Click here](https://hestabroo.github.io/SpotifyWrapped/SpotifyDownloadInstructions.html) to download it!", 
-        type=['zip']
-    )
-    while zipobj is None:
-        st.stop()  #wait until we have a file
-    
-    st_progress_text = st.empty()
-    st_progress_bar = st.progress(0)
-    
-    #wrap this in a try in case wrong format
-    try:
-        st_progress_text.write("🤐 Un-zipping your data...")
-        with zipfile.ZipFile(zipobj) as z:
-            files = [f for f in z.namelist() if f.startswith("Spotify Extended Streaming History/Streaming_History_Audio") and f.endswith(".json")]
-            files = sorted(files)
-    
-            dfs=[]
-            for f in files:
-                with z.open(f) as fo:
-                    data = pd.DataFrame(json.load(fo))
-                    dfs.append(data)
-    
-        streamhx = pd.concat(dfs).reset_index()
-        if streamhx.empty: raise BadData("no data imported")  #explicitly call an error if it's empty
-    except:
-        st.error("Hm... That doesn't seem to be the right file/format... Try again?")
-        st_progress_text.empty()
-        st_progress_bar.empty()
-        st.stop()
+st.write("")
+st.subheader("File Upload")
+zipobj = st.file_uploader(
+    "Upload your Spotify Extended Play History (.zip format).  Don't have your play history data yet? [Click here](https://hestabroo.github.io/SpotifyWrapped/SpotifyDownloadInstructions.html) to download it!", 
+    type=['zip']
+)
+while zipobj is None:
+    st.stop()  #wait until we have a file
+
+st_progress_text = st.empty()
+st_progress_bar = st.progress(0)
+
+#wrap this in a try in case wrong format
+try:
+    st_progress_text.write("🤐 Un-zipping your data...")
+    with zipfile.ZipFile(zipobj) as z:
+        files = [f for f in z.namelist() if f.startswith("Spotify Extended Streaming History/Streaming_History_Audio") and f.endswith(".json")]
+        files = sorted(files)
+
+        dfs=[]
+        for f in files:
+            with z.open(f) as fo:
+                data = pd.DataFrame(json.load(fo))
+                dfs.append(data)
+
+    streamhx = pd.concat(dfs).reset_index()
+    if streamhx.empty: raise BadData("no data imported")  #explicitly call an error if it's empty
+except:
+    st.error("Hm... That doesn't seem to be the right file/format... Try again?")
+    st_progress_text.empty()
+    st_progress_bar.empty()
+    st.stop()
   {% endhighlight %}
 
   Besides that, I did some basic cleanup to filter out audiobooks and other lame not-music stuff, as well as to truncate a "tail" at the start of usage (this might have just been a me thing, but my account "existed" a year before I really started using it creating whitespace before charts).  Also added some QOL columns:
   
   {% highlight python %}
-    streamhx = streamhx[streamhx['audiobook_title'].isna()]  #remove audiobooks and other nerd shit
-    
-    streamhx['dttm'] = pd.to_datetime(streamhx['ts'])
-    streamhx['dttm_local'] = streamhx['dttm'].dt.tz_convert('America/New_York')  #convert to local timezone
-    
-    streamhx['year'] = streamhx['dttm'].dt.year
-    streamhx['month_start'] = streamhx['dttm'].dt.to_period("M").dt.start_time
-    streamhx['week_start'] = streamhx['dttm'].dt.to_period("W").dt.start_time
-    streamhx['hour'] = streamhx['dttm'].dt.hour
-    streamhx['weekday'] = streamhx['dttm'].dt.day_name()
-    
-    streamhx['hr_played'] = streamhx['ms_played'] / 1000 / 60 / 60
-    
-    streamhx.rename(columns={
-        'master_metadata_track_name':'song_name',
-        'master_metadata_album_artist_name':'artist_name',
-        'master_metadata_album_album_name': 'album_name'
-    }, inplace=True)  #simplify some column names
-    
-    start_date = np.percentile(streamhx['dttm'],1)  #exclude tail before really using account...if like me.  should be insignificant otherwise
-    streamhx = streamhx[streamhx['dttm']>=start_date]
+streamhx = streamhx[streamhx['audiobook_title'].isna()]  #remove audiobooks and other nerd shit
+
+streamhx['dttm'] = pd.to_datetime(streamhx['ts'])
+streamhx['dttm_local'] = streamhx['dttm'].dt.tz_convert('America/New_York')  #convert to local timezone
+
+streamhx['year'] = streamhx['dttm'].dt.year
+streamhx['month_start'] = streamhx['dttm'].dt.to_period("M").dt.start_time
+streamhx['week_start'] = streamhx['dttm'].dt.to_period("W").dt.start_time
+streamhx['hour'] = streamhx['dttm'].dt.hour
+streamhx['weekday'] = streamhx['dttm'].dt.day_name()
+
+streamhx['hr_played'] = streamhx['ms_played'] / 1000 / 60 / 60
+
+streamhx.rename(columns={
+    'master_metadata_track_name':'song_name',
+    'master_metadata_album_artist_name':'artist_name',
+    'master_metadata_album_album_name': 'album_name'
+}, inplace=True)  #simplify some column names
+
+start_date = np.percentile(streamhx['dttm'],1)  #exclude tail before really using account...if like me.  should be insignificant otherwise
+streamhx = streamhx[streamhx['dttm']>=start_date]
   {% endhighlight %}
   
 </details>
@@ -123,7 +123,7 @@ First up was the basics.  Critical as I was of Spotify only really doing the "to
   At first I tried to do this by iteratively "shrinking" the full date, dropping the lowest-volume end - but this greedy logic got hung up on local peaks.  I ended up looping through each possible window start point and extending <em>outwards</em> until 50% was captured, and finding the best (smallest) window that achieved this:
 
   {% highlight python %}
-  #find the smallest possible window containing x% of play time
+#find the smallest possible window containing x% of play time
 artist_month.sort_values(by=['artist_name', 'month_start'], inplace=True)
 target = 0.5
 
@@ -173,35 +173,35 @@ In addition to the pure Top 10, I also wanted to try to tease out tracks and art
   Approach was just to blow out songs and artists into a full grid of each month and rank medians.  For obvious reasons, medians of zero are excluded:
   
   {% highlight python %}
-  #what was your most CONSISTENT song?
-  full_songs = pd.DataFrame({'song_name': streamhx['song_name'].unique()})
-  full_grid = full_months.merge(full_songs, how="cross")
-  
-  song_months = streamhx.groupby(['song_name', 'month_start'], as_index=False).agg(ct=('ts', 'count'), hr_played=('hr_played', 'sum'))
-  song_months = full_grid.merge(song_months, how="left", on=['month_start', 'song_name'])
-  song_months = song_months.fillna(0)
-  
-  song_rank = song_months.groupby('song_name', as_index=False)['hr_played'].median()
-  song_rank = song_rank.sort_values('hr_played', ascending=False)
-  song_rank = song_rank[song_rank['hr_played']>0]  #ignore median 0
-  
-  goto_song = song_rank.head(1)['song_name'].iloc[0]
-  goto_songartist = songs[songs['song_name']==goto_song].head(1)['artist_name'].iloc[0]
-  {% endhighlight %}
-  
-  Recognizing that zeros were being excluded and that may mean some users don't get any hits here - I coded this as an optional output in the app that only shows where applicable:
-  
-  {% highlight python %}
-  ##Top Songs##
-  _optionalphrase = ""
-  if len(goto_song)>0: _optionalphrase = f"Your theme song for the past {datayears} years has been **{goto_song}** by **{goto_songartist}**.  While it may not have been your most played, this is the song you've listened to the most consistently through it all.  "
-  
-  st.header("Top Tracks")
-  st.write(f"Out of the {streamhx['song_name'].nunique():,} unique songs you've listened to, a few were certainly your favourites.  "
-           f"{_optionalphrase}"
-           "Check out the full list of your top tracks below:"
-           )
-  st.dataframe(df_topsongs_display, height=387)
+#what was your most CONSISTENT song?
+full_songs = pd.DataFrame({'song_name': streamhx['song_name'].unique()})
+full_grid = full_months.merge(full_songs, how="cross")
+
+song_months = streamhx.groupby(['song_name', 'month_start'], as_index=False).agg(ct=('ts', 'count'), hr_played=('hr_played', 'sum'))
+song_months = full_grid.merge(song_months, how="left", on=['month_start', 'song_name'])
+song_months = song_months.fillna(0)
+
+song_rank = song_months.groupby('song_name', as_index=False)['hr_played'].median()
+song_rank = song_rank.sort_values('hr_played', ascending=False)
+song_rank = song_rank[song_rank['hr_played']>0]  #ignore median 0
+
+goto_song = song_rank.head(1)['song_name'].iloc[0]
+goto_songartist = songs[songs['song_name']==goto_song].head(1)['artist_name'].iloc[0]
+{% endhighlight %}
+
+Recognizing that zeros were being excluded and that may mean some users don't get any hits here - I coded this as an optional output in the app that only shows where applicable:
+
+{% highlight python %}
+##Top Songs##
+_optionalphrase = ""
+if len(goto_song)>0: _optionalphrase = f"Your theme song for the past {datayears} years has been **{goto_song}** by **{goto_songartist}**.  While it may not have been your most played, this is the song you've listened to the most consistently through it all.  "
+
+st.header("Top Tracks")
+st.write(f"Out of the {streamhx['song_name'].nunique():,} unique songs you've listened to, a few were certainly your favourites.  "
+         f"{_optionalphrase}"
+         "Check out the full list of your top tracks below:"
+         )
+st.dataframe(df_topsongs_display, height=387)
   {% endhighlight %}
 </details>
 
@@ -272,7 +272,6 @@ Another thing I wanted to do here was to call out those times we all get obsesse
   First up was generating the songs x weeks table.  This was also leveraged for the "top week" section of the Top Songs above:
   
   {% highlight python %}
-  #biggest week
 songweeks = streamhx.groupby(by=['song_name', 'artist_name', 'week_start'], as_index=False).agg(
     times_played=('ts','count'),
     total_hrs=('hr_played','sum')
@@ -323,7 +322,7 @@ Another cool thing we have access to with the Extended Streaming History is a fu
   The approach for peak hours here was the same as "peak listening range" for Top Artists.  I just rolled through each 12-month window in the user's play history and logged the window with the highest total playtime.  I also used plotly for interactive charting here and overlaid a rolling 6mo avg:
   
   {% highlight python %}
-  weekly = streamhx.groupby(by='week_start', as_index=False)['hr_played'].sum()
+weekly = streamhx.groupby(by='week_start', as_index=False)['hr_played'].sum()
 weekly = weekly.sort_values('week_start')
 weekly['6mo_avg'] = weekly['hr_played'].rolling(window=26).mean()
 
@@ -393,7 +392,7 @@ The second cool thing we can do is create a heatmap for peak listening times!  I
   Pretty basic pivot and plot here.  Technically the units are "mean hours listened during this hour", but I overrode with a qualitative scale because really it's just relative volume that's interesting.  I define a couple formatting patches to outline work hours and weekends (these get reused later):
   
   {% highlight python %}
-  datadays = (timedata['dttm'].max() - timedata['dttm'].min()).days
+datadays = (timedata['dttm'].max() - timedata['dttm'].min()).days
 
 timelabels = {}
 for _ in range (24):  #quick lookup for time formatting
@@ -764,21 +763,21 @@ hrly_denom = hrly_denom.reindex(
   I did the calculations required for both charts above in one pass, analyzing the "percent overall" per style (Chart 1) as well as the "deviation from norm" (Chart 2).  For deviation from norm, I used a z-score based on the acutal hours played in that hour compared to what we would expect to see with completely uniform distribution of that style's playtime.  I also calculated some other options to play around with - including rolling window values to smooth out single-hour spikes.  Ultimately the rolling window z-score was used for Chart 2:
   
   {% highlight python %}
-  hrly_styles = {}
-  for c, hmap in hrly_tots.items():   
-      _pct = hmap / hrly_denom
-      _diff = _pct / baseline[c] - 1
-      
-      _expected = hrly_denom * baseline[c]
-      _zscore = (hmap - _expected) / np.sqrt(_expected)   # (observed-expected)/sqrt(expected)  (raw cts, not %)
-      
-      hrly_styles[c] = {
-          'overall_pct': _pct,
-          'pct_diff': _diff,
-          'rolling_pctdiff': _diff.T.rolling(window=4, min_periods=1).mean().T,  #axis=1 deprecated here,
-          'zscore': _zscore,
-          'rolling_zscore': _zscore.T.rolling(window=3, min_periods=1).mean().T
-      }
+hrly_styles = {}
+for c, hmap in hrly_tots.items():   
+    _pct = hmap / hrly_denom
+    _diff = _pct / baseline[c] - 1
+    
+    _expected = hrly_denom * baseline[c]
+    _zscore = (hmap - _expected) / np.sqrt(_expected)   # (observed-expected)/sqrt(expected)  (raw cts, not %)
+    
+    hrly_styles[c] = {
+        'overall_pct': _pct,
+        'pct_diff': _diff,
+        'rolling_pctdiff': _diff.T.rolling(window=4, min_periods=1).mean().T,  #axis=1 deprecated here,
+        'zscore': _zscore,
+        'rolling_zscore': _zscore.T.rolling(window=3, min_periods=1).mean().T
+    }
   {% endhighlight %}
   
   Lastly, not every style has interesting trends by hour.  I set up the app to only display the five most interesting ones by ranking the <em>sum</em> of absolute z-scores per hour:
