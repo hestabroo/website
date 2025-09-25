@@ -1,14 +1,13 @@
 ---
 layout: single
-sidebar: false
 title: "Gerrymandering!"
+date: 2025-09-10
 subtitle: 'Creating an automated method to achieve the "impossible" 11-2 NC split'
 excerpt: 'An automated method to achieve the "impossible" 11-2 NC split'
 author_profile: false
 tags: [Geospatial Analysis]
 header:
   teaser: /assets/projects/20250910_gerrymandering/heatmapscreenshot.png
-date: 2025-09-10
 ---
 
 *tl;dr: I tried my hand at "packing and cracking" state districts in an attempt to out-gerrymander North Carolina Republicans for the 2016 House election.  Check out my final district map below, and read on for the full method to develop this process.*
