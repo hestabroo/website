@@ -382,7 +382,7 @@ def dropprec(idx, note):
     log.append([d, _c, idx, 'dropped', note])
 
 
-target = 0.27
+target = 0.30
 log = []  #items housed in the log will be of the format [district, iteration, index, "dropped/illegal", notes]
 
 for d in range(1,3): #districts 1-2
