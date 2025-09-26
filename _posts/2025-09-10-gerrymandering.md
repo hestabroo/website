@@ -154,7 +154,7 @@ Okay - so how to start approaching a problem like this?  This simple-sounding pr
 <details>
   <summary>Full definitions (for nerds)</summary>
   For "equally sized", I deferred to the official districts for an acceptable range of variation - which was 323k-409k votes per district.<br><br>  
-  Similarly, I deferred to the official election results for what lawmakers at the time considered a "safe" majority - in this case the lowest-performing Republican district won with a 52.3% margin (I did end up aiming a little higher given my benefit of hindsight). 
+  Similarly, I deferred to the official election results for what lawmakers at the time considered a "safe" majority - in this case the lowest-performing Republican district won with a 52.3% margin (I did end up aiming a little higher [55%] given my benefit of hindsight). 
 </details>
 
 
@@ -237,7 +237,7 @@ As you can probably see, this didn't work.  The first obvious problem was that m
 ### Attempt #2: Targeted Construction
 Given the massive number of potential solutions and the heavy computation required to manipulate these geometries, I realized I was going to need to be a lot more targeted in my approach.  My second idea was that I would simply nail it the first time, and build a map from scratch.  
 
-The core idea of gerrymandering is "packing and cracking" - i.e. consolidating all of your opponents votes into a small number of districts where they win with an excessive majority ("packing"), and then diluting the rest of their votes across the remaining districts such that they *just marginally* lose in each.  Conceptually, my strategy was to first pack then crack.  My presumption was that as long as I could sufficiently pack two districts, the remaining 11 would be easy (*spoiler - they were not*).  I let the high-level results inform the targets for each stage.  Overall, Republicans held **53%** of the popular vote.  Therefore, in order to secure a 57% victory in 11 districts, the remaining two districts would need to be about **70% Democratic**.
+The core idea of gerrymandering is "packing and cracking" - i.e. consolidating all of your opponents votes into a small number of districts where they win with an excessive majority ("packing"), and then diluting the rest of their votes across the remaining districts such that they *just marginally* lose in each.  Conceptually, my strategy was to first pack then crack.  My presumption was that as long as I could sufficiently pack two districts, the remaining 11 would be easy (*spoiler - they were not*).  I let the high-level results inform the targets for each stage.  Overall, Republicans held **53%** of the popular vote.  Therefore, in order to be able to secure up to a 57% victory in 11 districts, the remaining two districts would need to be about **70% Democratic**.
 
 ##### Packing!
 So - how to find legal districts that are comprised of 70% Democratic voters?  My approach was to, like a sculptor, start with the entire "block" of the state and slowly whittle it down until only a highly condensed district remains.  If you're a nerd like me, the full specifics of this logic and development process are below, but after several iterations I was able to achieve a successful 70% result:
