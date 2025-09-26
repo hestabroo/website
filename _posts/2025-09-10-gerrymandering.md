@@ -142,6 +142,7 @@ mapped_results.head(5)
 
 
 ## The Analysis
+
 ### Intro
 Okay - so how to start approaching a problem like this?  This simple-sounding project ended up spiralling into many iterations of failed attempts and taxing overnight runs for my laptop fan.  I won't fully go into every wacky idea I tried along the way, but I'll outline some of the key stages and learnings.  My key requirements for a solution here were that a final district map had to:
 
@@ -897,7 +898,9 @@ Overall, this project was simultaneously an absolute blast and my own personal "
 - **Alternate Configurations**: Originally, my plan with this project was to bend the 2016 map in all directions - creating maps that produced Democratic vitories as well as more balanced representation of the popular vote.  While I did set up the script to be dynamic to different targets and parties, for the reasons mentioned above flipping the target introduced a whole different set of geometry errors, and I ultimately had to just make the call that this project had eaten enough of my free time.  With more time and cleaner data, I would have loved to see how many different extremes could be produced from one map.<br>That said, from my brief foray into the Democratic side of this analysis I did quickly learn what a massive different 3% of the popular vote makes (47% vs. 53%).  With theoretically perfectly balanced districts, Republicans would actually win **100%** of districts - which might explain why gerrymandering 10 or 11 of them wasn't too hard.  In comparison, a Democratic pack and crack actually had a **lot** of manipulation needed to achieve even a slim majority.  Definitely made me check my gut reaction to the inital presmise.
 - **Non-Piecewise Solutions**: The biggest flaw I see in my overall approach to this problem is how narrowly "one precinct at a time" the logic was.  While this was the only valid solution I could wrap my head around, I'm sure there must be a more holistic approach that would optimize the whole map at once, as opposed to evaluating each district in a vacuum.  I couldn't figure it out, but if you have experience in this area I'd love to learn about it - drop me a line at Hayden.Estabrook@gmail.com!
 
-That's all for this time!  Thanks for checking this out and remember to be thankful you live in a country with independent redistricting where we don't need to deal with this tomfoolery!<br>Hayden
+That's all for this time - thanks for checking this out and remember to be thankful you live in a country with independent redistricting where we don't need to deal with this tomfoolery!
+
+'til next time,<br>Hayden
 
 
 
