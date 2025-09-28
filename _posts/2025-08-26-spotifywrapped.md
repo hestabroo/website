@@ -11,7 +11,7 @@ header:
   teaser: /assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png
 ---
 
-*tl;dr: Check out [this neat tool](https://haydenestabrook-spotifywrapped.streamlit.app/) I built to analyze your all-time Spotify listening history!  Read on below for an embarassing exposé of my personal music listening.*
+*tl;dr: Check out [this neat tool](https://haydenestabrook-spotifywrapped.streamlit.app/) I built to analyze your all-time Spotify listening history!  Read on below for an embarrassing exposé of my personal music listening.*
 
 ![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/spotifywrapped_app_screenshot.png)
 <figcaption>Landing page for the Spotify Wrapped+ app</figcaption>
@@ -19,7 +19,7 @@ header:
 
 
 ## Intro
-Music is a huge part of my life, so as someone obsessed with data it should surprise no one that I love Spotify Wrapped season every December.  I love the opportunity to see what my friends have been listening to, discover new artists, and enjoy the embarassing outings of everyone's guilty pleasure songs. 
+Music is a huge part of my life, so as someone obsessed with data it should surprise no one that I love Spotify Wrapped season every December.  I love the opportunity to see what my friends have been listening to, discover new artists, and enjoy the embarrassing outings of everyone's guilty pleasure songs. 
 
 *However*, I've always felt like the Wrapped summary you get each year is quite surface level, and it felt like a miss given the wealth of data Spotify has that they don't really go beyond "top 10 tracks/artists".  SO, I set out to make a "better" Spotify Wrapped that can go deeper into your personal listening style and look more broadly outside the vacuum of the past 12 months.
 
@@ -108,7 +108,7 @@ streamhx = streamhx[streamhx['dttm']>=start_date]
 
 ## The Analysis
 ### Top Artists/Tracks
-First up was the basics.  Critical as I was of Spotify only really doing the "top 10s", obviosuly it's something everyone want to see, and a pretty cool thing to see across *all time*.  I tried to add a little more info around how many cumulative hours have been spent listening to each track/artist, as well as the "peak listening periods" for each:
+First up was the basics.  Critical as I was of Spotify only really doing the "top 10s", obviously it's something everyone want to see, and a pretty cool thing to see across *all time*.  I tried to add a little more info around how many cumulative hours have been spent listening to each track/artist, as well as the "peak listening periods" for each:
 
 ![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/topartists_table.png)
 <figcaption>My all-time top artists</figcaption>
@@ -262,7 +262,7 @@ for f in [fig.update_xaxes, fig.update_yaxes]:  #iteratiely update both axis
 
 
 ### Musical "Binges"
-Another thing I wanted to do here was to call out those times we all get obsessed with one song for a week or two.  This is probably my favourite section of the whole analysis, as for me it was simultaneously a fun trip down memory lane, and a super embarassing exposé of guilty pleasures.  The high-level design here was to create a table for each song's plays per week and identify an "outlier" threshold for the music binges to highlight on the list:
+Another thing I wanted to do here was to call out those times we all get obsessed with one song for a week or two.  This is probably my favourite section of the whole analysis, as for me it was simultaneously a fun trip down memory lane, and a super embarrassing exposé of guilty pleasures.  The high-level design here was to create a table for each song's plays per week and identify an "outlier" threshold for the music binges to highlight on the list:
 
 ![]({{ site.baseurl }}/assets/projects/20250811_spotifywrapped_siteassets/obsessions.png)
 <figcaption>...Mortifying.  I can vividly remember each of these weeks lol</figcaption>

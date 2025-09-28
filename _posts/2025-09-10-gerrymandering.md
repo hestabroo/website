@@ -18,7 +18,7 @@ header:
 
 
 ## Background
-Leading up to the 2016 U.S. elections, North Carolina's popular vote was relatively 50/50 between Democrats and Republicans, and historically the state's House representation had been evenly split between the two parties.  In the lead up to the 2016 election, Republican lawmakers managed to pass a gerrymandered redistricting map that led Republicans to secure a 10-3 victory in the 2016 House election.  In 2018, the 10-3 district map was struck down by U.S. Federal courts, who deemed it an unconstitutional partisan gerrymander.  The case has widely been criticized as an aggregious example of partisan gerrymandering, and an example of gerrymandering's negative impact on fair democratic process.
+Leading up to the 2016 U.S. elections, North Carolina's popular vote was relatively 50/50 between Democrats and Republicans, and historically the state's House representation had been evenly split between the two parties.  In the lead up to the 2016 election, Republican lawmakers managed to pass a gerrymandered redistricting map that led Republicans to secure a 10-3 victory in the 2016 House election.  In 2018, the 10-3 district map was struck down by U.S. Federal courts, who deemed it an unconstitutional partisan gerrymander.  The case has widely been criticized as an egregious example of partisan gerrymandering, and an example of gerrymandering's negative impact on fair democratic process.
 
 In the lead up to the election, Republican Rep. David Lewis was famously cited as saying "I propose that we draw the maps to give a partisan [10-3 split], because I **do not believe it's possible to draw a map with [an 11-2 split]**."
 
@@ -170,7 +170,7 @@ My first theory for solving this was that: if I just randomly modified the start
 
 <details>
   <summary>Full code for nerds</summary>
-  Conceptually, the idea was to pick a random district, identify a precinct within that district elligible to move elsewhere, and swap it to a neighbouring district.  My assumption (spoiler - <em>incorrect</em> assumption) was that any precinct that sat on the boundary between two districts could safely be moved to either without breaking contiguity.  I then ran a check to confirm that moving the precinct did not exceed our allowable district sizes on either district, and made the swap:
+  Conceptually, the idea was to pick a random district, identify a precinct within that district eligible to move elsewhere, and swap it to a neighbouring district.  My assumption (spoiler - <em>incorrect</em> assumption) was that any precinct that sat on the boundary between two districts could safely be moved to either without breaking contiguity.  I then ran a check to confirm that moving the precinct did not exceed our allowable district sizes on either district, and made the swap:
 
   {% highlight python %}
   #the idea will be to start with the current map and just randomly give a border precinct to a neighbouring precinct (where able), and see what that gives us
@@ -188,7 +188,7 @@ with warnings.catch_warnings():
             _fromdist = random.randint(1,13)  #pick a random district
     
             _fromprecs = _moving_results[_moving_results['district']==_fromdist]  #get the subset of prec-juris in this district
-            _fromborder = _fromprecs.geometry.union_all().boundary  #identifythe outer boundary to find permimeter pjs
+            _fromborder = _fromprecs.geometry.union_all().boundary  #identify the outer boundary to find perimeter pjs
             _fromcandidates = _fromprecs[_fromprecs.geometry.intersects(_fromborder)]  #subset of perimeter pjs
             _mover = _fromcandidates.iloc[[random.randint(0,len(_fromcandidates)-1)]]  #pick a random one  #supposedly the double brackets keep it a gdf
             
