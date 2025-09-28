@@ -288,7 +288,7 @@ This clearly indicates a trend towards the downtown core, but because many point
 
 
 <iframe src="{{ site.baseurl }}//assets/projects/20250811_biketheft_assets/foliumHmapRaster100.html" height="400" width="100%"></iframe>
-<figcaption>Heatmap of relative annual bicycle theft in Toronto from 2014-2025 (100m granularity).  Shoutout to our west-end outlier *Dufferin Mall!</figcaption>
+<figcaption>Heatmap of relative annual bicycle theft in Toronto from 2014-2025 (100m granularity).  Shoutout to our west-end outlier Dufferin Mall!</figcaption>
 
 
 <details>
@@ -454,7 +454,7 @@ m
 
 
 ## Identifying Geographic Indicators of Theft
-Finally, the last thing I was interested in was to see if we could train a model to *predict* bicycle theft based on the geographic features present in the surrounding area.  I leveraged the OSM features dataset for this, and by mapping its *over 1M* buildings, businesses, and landscape elements onto the fishnet grid above was able to train a prediction model to look for features whose presence correlated with theft rates across each cell.  There will be a big nerdy dropdown on the training process below, but the outcome was a model that could predict annual theft rates at any point in Toronto with **85% accuracy** based on the geographic features within 200m!
+Finally, the last thing I was interested in was to see if we could train a model to *predict* bicycle theft based on the geographic features present in the surrounding area.  I leveraged the OSM features dataset for this, and by mapping its *over 1M* buildings, businesses, and landscape elements onto the fishnet grid above was able to train a prediction model to look for features whose presence correlated with theft rates across each cell.  There will be a big nerdy dropdown on the training process below, but the outcome was a model that could predict annual thefts at any point in Toronto with **85% accuracy** based on the geographic features in the surrounding 200m!
 
 
 ![]({{ site.baseurl }}/assets/projects/20250811_biketheft_assets/LGBMr2.png)
@@ -599,7 +599,7 @@ with open("search_grid_optimize.pkl", 'wb') as f:
 
 
 
-The cool thing that this trained model lets us now do, is to actually start to peak under the hood at which types of geographic features are strong predictors of theft!  Unfortunately, the black-box complexity of the type of model required to give good predictions here results in influences are not as simple as "2.1 thefts per year for each Walmart in the area".  The impact of any one feature can be non-linear, or may only be significant above a cutoff threshold or in conjunction with *other features*.
+The cool thing that this trained model lets us do as well is to actually start to peak under the hood at which types of geographic features are strong predictors of theft!  Unfortunately, the complexity of the type of model required to give good predictions here means influences are not quite as simple as "2 additional thefts per year for each Walmart in the area".  The impact of any one feature can be non-linear, or may only be significant above a cutoff threshold or in conjunction with *other features*.
 
 That said, the most significant contributors to predictions were **bicycle rental racks** (which have a generally positive relationship with theft), **cafes** (generally positive), **footways and walking paths** (generally *negative*), **apartments** (generally positive), and **pubs** (generally negative).  Again, this model is non-deterministic so please read the full dropdown for analysis and limitations before leaving the bike unlocked during your next pint of Guinness!
 
@@ -609,9 +609,9 @@ That said, the most significant contributors to predictions were **bicycle renta
 
 <details>
   <summary>Another big nerdy dropdown</summary>
-  Well, if you were nerdy enough to clik this I'm going assume you know some basics about LGBM.  Gradient boosting machines like LGBM basically go through a bunch of fancy math to organize the data into a <em>giant</em> decision tree.  These can give super great modelling capacity and adapt to capture multi-feature interactions and non-linear trends - however, the double-edge of that is their output is not so interpretable as something like linear regression (with a simple "one number coefficient per feature").<br><br>
+  Well, if you were nerdy enough to click this I'm going assume you know some basics about LGBM.  Gradient boosting machines like LGBM basically go through a bunch of fancy math to organize the data into a <em>giant</em> decision tree.  These can give super great modelling capacity and adapt to capture multi-feature interactions and non-linear trends - however, the double-edge is that their output is not so interpretable as something like linear regression (with a simple "one number coefficient per feature").<br><br>
 
-  To peak under the hood of LGBM, I used SHAP - which is basically a method drip-feeding real data points through the trained model and watching how the final prediction is moved up or down by each feature.  This is top-down method tells us, for each individual sample, the approximate contribution of each feature to the final prediction.  Because of the complexity of the relationship the model has with each feature, there's no "one number" describing each feature's impact on predictions.<br><br>
+  To peak under the hood of LGBM, I used SHAP - which is basically a method drip-feeding real data points through the trained model and watching how the final prediction is moved up or down by each feature.  This is top-down method tells us, for each individual sample, the approximate contribution of a feature to the final prediction.  Because of the complexity of the relationship the model has with each feature, there's no "one number" describing each feature's impact on predictions.<br><br>
 
   {% highlight python %}
 import shap
@@ -635,22 +635,22 @@ display(coefdf.sort_values(by='Mean Abs SHAP', ascending=False).head(20))
 
 
 
-  The "top features" above were based on mean absolute SHAP score - i.e. the features that caused the model to change its prediction the most overall.  Their directionality (if their presence typically indicates more or <em>less</em> theft) was based on the Spearman correlation between each feature's SHAP scores and raw values.  Basically, "does predicted theft increase when this feature is present" (positive correlation), or "do higher values of this feature lead to <em>lower</em> theft predictions" (negative correlation).<br><br>  
+  The "top features" above were based on mean absolute SHAP score - i.e. the features that caused the model to change its prediction the most overall.  Their directionality (i.e. does presence typically indicates <em>more</em> or <em>less</em> theft) was based on the Spearman correlation between each feature's SHAP scores and raw values.  Basically, "does predicted theft increase when this feature is present" (positive correlation), or "do higher values of this feature lead to <em>lower</em> theft predictions" (negative correlation).<br><br>  
   
-  The word "typically" is doing a lot of work in that sentence, as in many cases a feature's impact on the final prediction can have a complicated relationship with its value.  We can see the exact relationship between a feature's value and impact on predictions with dependence plots.  These are scatterplots of each data point showing the feature's value and prediction impact it produced.  Because the values of <em>other</em> features can influence a gradient boosting model's interpretation, these plots also introduce coloring showing the value of the next most-correlated feature for each point.  Some examples:<br><br>
+  The word "typically" is doing a lot of work in that sentence, as in many cases a feature's impact on the final prediction can have a complicated relationship with its value.  We can see the exact relationship between a feature's value and impact on predictions with dependence plots.  These are scatterplots of each data point comparing the feature's value to the prediction impact it produced.  Because the values of <em>other</em> features can influence a gradient boosting model's interpretation, these plots also introduce coloring showing the value of the next most-correlated feature for each point.  Some examples:<br><br>
 
   Dependence plot for bicycle rental racks.  A nice simple positive correlation (more bike rentals = more theft in the area).  Note the non-linear, step-wise relationship:
   <img src = "{{ site.baseurl }}/assets/projects/20250811_biketheft_assets/dependence_bikerental.png" width="100%">
-  
+  <br>
   Dependence plot for apartments.  Note that the presence of nearby footways <em>decreases</em> predicted theft in cells with identical numbers of apartments:
   <img src = "{{ site.baseurl }}/assets/projects/20250811_biketheft_assets/dependence_apartments.png" width="100%">
-
+  <br>
   Dependence plot for footways.  Notably parabolic:
   <img src = "{{ site.baseurl }}/assets/projects/20250811_biketheft_assets/dependence_footway.png" width="100%">
-
+  <br>
   Dependence plot for pubs.  While there appears to be a positive correlation, the overall Spearman correlation was actually slightly <em>negative</em> (possibly due to the slightly parabolic relationship at high values):
   <img src = "{{ site.baseurl }}/assets/projects/20250811_biketheft_assets/dependence_pub.png" width="100%">
-
+  <br>
   It's worth keeping in mind that each data point in this model has almost <strong>500</strong> features, so the SHAP contributions of any one are a very incomplete picture of how the model actually reached its conclusion about predicted theft in an area.
 </details>
 
@@ -659,12 +659,13 @@ display(coefdf.sort_values(by='Mean Abs SHAP', ascending=False).head(20))
 ## Final Thoughts
 That's all for this one!  A very fun quick little analysis, and a surprisingly great opportunity for predictive modelling.  Working with such high-dimensionality data, this was a great opportunity to apply SHAP scores to start untangling the inner workings of a non-deterministic model.  I would classify this project more as "fun data to play with" than "actually valuable finding" as I think there's some pretty serious limitations in the dataset that limit any real applicability:
 
-- **Lack of Control Data**:  While the dataset of stolen bikes is great, what's sorely missing is a dataset of *not stolen* bikes.  Without the ability to control for theft as a *percentage*, there's a very fair criticism that what we've really created here is just a map of high-traffic areas.  When we're only trying to predict the absolute number of bicycle thefts, super dangerous low-traffic areas look exactly the same as extremely safe high-traffic ones.  What would actually be useful (and I suspect how most people are initially interpreting this map) is a map of areas where your bike is *likely* to get stolen - which requires a theft *rate*, not just an absolute number.  I could have started to get at this by incorporating geographic population density, but that seemed like overkill for what this was.<br>We can even see implications of this limitation in the predictive model, where it's effectively just saying "lots of stuff" = "probably more theft".  Bicycle rental racks are prime example of this, since presumably the Toronto Bike Share service was intentional about placing rental racks in high-traffic (specifically, high *bicycle* traffic) areas.  Intuitively, I would hypothesize that the presence of rental racks actually has a *negative* impact on theft rates (since less people even bring their own bikes), and what we're seeing here is just a very strong correlator with "places people like to lock bikes".<br>I did attempt to measure this weakness by adding a dummy feature to the model for "total number of features".  If this had come out as one of the top predictors then I probably would have just thrown the whole model out.  The fact that this wasn't a strong predictor and the presence of non-linear and multi-feature relationships implies that the model was at least finding *some* valueable insights - but I would take this whole thing with a very sizeable grain of salt.
-- **Incomplete Picture of Theft**: Notably, this dataset only includes **police-reported** incidents, which I would hypothesize are a small fraction of total bicycle thefts.  There's a long list of socio-economic and cost-of-bike biases included in which incidents riders choose to report, which I suspect are skewing even the relative distribution of theft we see in this data.
-- **Broad Categorization of Geographic Features**: While the OSM data is great, its geographic features are quite broadly categorized - which limits the depth of insights we can draw about the true "makeup" of a neighbourhood.  Additional feature metadata (e.g. popularity, peak business times, rating, cost) could reveal a lot of interesting trends that are missed when all establishments are just lumped together as "restaurant".  Similarly, the open-sourced and unstandardized nature of OSM data may introduce biases around which features were tagged and how (e.g. is this complex "one apartment" or 100).  That said, I do love working with open-sourced data for exactly these same reasons since it's very cool to see valuable high-level trends be able emerge from such "messy" data when the scale is large enough.
+- **Lack of Control Data**:  While the dataset of stolen bikes is great, what's sorely missing is a dataset of *not-stolen* bikes.  Without the ability to control for theft as a percentage, there's a very fair criticism that what we've really created here is just a map of high-traffic areas.  When we're only trying to predict the absolute number of bicycle thefts, super dangerous low-traffic areas look exactly the same as extremely safe high-traffic ones.  What would actually be useful (and I suspect how most people initially interpret the above) is a map of areas where your bike is *likely* to get stolen - which requires a theft *rate*, not just an absolute number.  I could have started to get at this by incorporating geographic population density, but that seemed like overkill for what this was.<br>We can even see implications of this limitation in the predictive model, where it's effectively just saying "lots of stuff" = "probably more theft".  Bicycle rental racks are prime example of this, since presumably the Toronto Bike Share service was intentional about placing rental racks in high-traffic (specifically, high-*bicycle*-traffic) areas.  Intuitively, I would hypothesize that the presence of rental racks actually has a *negative* impact on theft rates (since less people bring their own bikes), and what we're seeing here is just a very strong correlation with "places people like to lock bikes".<br>I did attempt to measure this weakness by adding a dummy feature to the model for "total number of features".  If this had come out as one of the top predictors then I probably would have just thrown the whole model out.  The fact that this wasn't a strong predictor and the presence of non-linear and multi-feature relationships implies that the model was at least finding *some* valueable insights - but I would take this whole thing with a very sizeable grain of salt.
+- **Incomplete Picture of Theft**: Notably, this dataset only includes **police-reported** incidents, which I would hypothesize are a small fraction of total bicycle thefts.  There's a long list of socio-economic and cost-of-bike biases that could influence which incidents riders choose to report, which I suspect are skewing even the relative distribution of theft we see in this data.
+- **Broad Categorization of Geographic Features**: While the OSM data is great, its geographic features are quite broadly categorized - which limits the depth of insights we can draw about the true "makeup" of a neighbourhood.  Additional feature metadata (e.g. popularity, peak business times, rating, cost) could reveal a lot of interesting trends that are missed when all establishments are just lumped together as "restaurant".  Similarly, the open-sourced and unstandardized nature of OSM data may introduce biases around which features were chosen to be tagged and how (e.g. is this complex "one apartment" or 100).  That said, I do love working with open-sourced data for exactly these same reasons, since it's very cool to see meaningful high-level trends emerge from such "messy" data when the scale is large enough.
 
 
 That's all for this time!  Thanks so much for checking this out, and go ride a bike!
+
 Cheers,<br>Hayden
 
 
