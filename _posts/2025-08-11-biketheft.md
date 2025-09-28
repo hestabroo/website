@@ -7,12 +7,12 @@ excerpt: 'Analyzing historical bicycle theft in Toronto and predicting correlate
 author_profile: false
 tags: [Geospatial Analysis, Machine Learning]
 header:
-  teaser: /TEASER IMAGE
+  teaser: /assets/projects/20250811_biketheft_assets/teasermap.png
 ---
 
 *tl;dr: Here's where to and not to park your bike in Toronto!  Read on for a full description of the analysis, including identifying key geographic features correlated with high theft*
 
-FULL 400M IFRAME MAP
+<iframe src="{{ site.baseurl }}//assets/projects/20250811_biketheft_assets/foliumHmapRaster400.html" height="400" width="100%"></iframe>
 <figcaption>Heatmap of relative police-reported Toronto bike thefts between 2014-2025 (400m granularity)</figcaption>
 
 
@@ -149,7 +149,7 @@ features['type'] = features['type'].str.replace("["+string.punctuation+"]", "_",
 ## Theft Dates and Times
 The first thing I was interested to see was *when* bicycle theft was happening.  The first heatmap below breaks down bicycle theft season and year.  Unsurprisingly, bike theft is only really an issue in the summer (shocker), and appears to actually be on the decline in recent years:
 
-SEASONAL HEATMAP
+![]({{ site.baseurl }}/assets/projects/20250811_biketheft_assets/seasonal_hmap.png)
 <figcaption>Heatmap of TPS-reported Toronto Bicycle Thefts by year and month</figcaption>
 
 
@@ -182,14 +182,14 @@ Additionally, I was also curious to look at specific times of day.  The heatmap 
 
 I had initially assumed that this was just a lag in reporting (i.e. an office worker walks outside for lunch to realize their bike was stolen, and doesn't know the exact time it happened), but the trend actually completely disappears in *reported* times!  In fact, most bike thefts are not reported for **1-2** days after the incident.  After a bit of research, the explanation seems to be that theft happens when people leave their bike unattended for "just a minute" to pop in and get lunch or stop on their commute home.  Apparently many will wait to report in hopes that the bike shows up, or will wait until their next convenient downtime (apparently on company time):
 
-HOURLY HEATMAP
+![]({{ site.baseurl }}/assets/projects/20250811_biketheft_assets/hourly_hmap.png)
 <figcaption>Heatmap of TPC-reported bicycle theft by weekday and hour of occurrence</figcaption>
 
-REPORTED HEATMAP
-<figcaption>Heatmap of TPC-reported bicycle theft by weekday and hour of <strong><em>reporting</em></strong></figcaption>
+![]({{ site.baseurl }}/assets/projects/20250811_biketheft_assets/reported_hmap.png)
+<figcaption>Heatmap of TPC-reported bicycle theft by weekday and hour of <strong><em>reporting</em></strong>.  Notably, previous hourly trends disappear implying they are not an artifact of reporting times.</figcaption>
 
-TIME TO REPORT HEATMAP
-<figcaption>Heatmap of average days to report an incident of bicycle theft, based on the believed time of occurrence.  Notably, thefts on Fridays often go unreported until Monday, and reports made 2+ days after the incident appear to not know the exact time of theft (12:00AM)</figcaption>
+![]({{ site.baseurl }}/assets/projects/20250811_biketheft_assets/reported_vsocc.png)
+<figcaption>Heatmap of average days to report an incident of bicycle theft, based on the believed time of occurrence.  Notably, thefts on Fridays often go unreported until Monday, and reports made 2+ days after the incident appear to not know the exact time of theft (reported as "12:00AM")</figcaption>
 
 
 <details>
@@ -267,7 +267,7 @@ plt.show()
 Obviously, the most pressing question was *where* bikes were most often stolen in Toronto.  For a first pass at this, I simply plotted the coordinates of each individual theft to reveal a map of Toronto:
 
 
-SNS COORDINATE MAP
+![]({{ site.baseurl }}/assets/projects/20250811_biketheft_assets/simple coord map.png)
 <figcaption>All TPS-reported incidents of bicycle theft between 2014 and 2025</figcaption>
 
 <details>
@@ -286,8 +286,10 @@ ax.legend(title="Year")
 
 This clearly indicates a trend towards the downtown core, but because many points can layer on top of each other, it can be hard to discern relative theft rates for high-theft areas.  To improve on this, I created a heatmap of theft by laying a fishnet grid over the city map and calculating the average annual thefts within each cell.  This makes it much easier to discern the difference in theft rates within the high-theft downtown core, as well as clearly illustrates the individual streets and intersections with high theft:
 
-100M IFRAME MAP
+
+<iframe src="{{ site.baseurl }}//assets/projects/20250811_biketheft_assets/foliumHmapRaster100.html" height="400" width="100%"></iframe>
 <figcaption>Heatmap of relative annual bicycle theft in Toronto from 2014-2025 (100m granularity).  Shoutout to our west-end outlier *Dufferin Mall!</figcaption>
+
 
 <details>
   <summary>Full code and method</summary>
@@ -455,7 +457,7 @@ m
 Finally, the last thing I was interested in was to see if we could train a model to *predict* bicycle theft based on the geographic features present in the surrounding area.  I leveraged the OSM features dataset for this, and by mapping its *over 1M* buildings, businesses, and landscape elements onto the fishnet grid above was able to train a prediction model to look for features whose presence correlated with theft rates across each cell.  There will be a big nerdy dropdown on the training process below, but the outcome was a model that could predict annual theft rates at any point in Toronto with **85% accuracy** based on the geographic features within 200m!
 
 
-ACTUAL VS PREDICTED GRAPH
+![]({{ site.baseurl }}/assets/projects/20250811_biketheft_assets/LGBMr2.png)
 <figcaption>Testing the model's accuracy to predict bicycle theft at any point in Toronto based solely on the geographic features present within 200m (R2=0.85)</figcaption>
 
 
@@ -533,7 +535,7 @@ plt.ylabel("Predicted Annual Thefts")
   
   In reality, instead of just guessing at 400m as a good cell size for modelling, I actually ran an elbow method to identify the best one.  For each of the grid sizes above (50-1000m), I ran a small random sample of the map through the entire process above and compared performance.  The results of this are below, which were how I landed on 400m cells as the optimum for regression:
 
-  <img src = "{{ site.baseurl }}/ELBOWMETHODPICHERE" width="100%">
+  <img src = "{{ site.baseurl }}/assets/projects/20250811_biketheft_assets/LGBM_elbowmethod.png" width="100%">
 
   {% highlight python %}
 for n in grid_optimize:
@@ -601,7 +603,7 @@ The cool thing that this trained model lets us now do, is to actually start to p
 
 That said, the most significant contributors to predictions were **bicycle rental racks** (which have a generally positive relationship with theft), **cafes** (generally positive), **footways and walking paths** (generally *negative*), **apartments** (generally positive), and **pubs** (generally negative).  Again, this model is non-deterministic so please read the full dropdown for analysis and limitations before leaving the bike unlocked during your next pint of Guinness!
 
-BEESWARM
+![]({{ site.baseurl }}/assets/projects/20250811_biketheft_assets/beeswarm.png)
 <figcaption>Beeswarm plot of top SHAP feature contributions to the bicycle theft model.  This shows the 10 most impactful features, and visulaizes the value of each data point versus the direction it pushed the final prediction.</figcaption>
 
 
@@ -638,16 +640,16 @@ display(coefdf.sort_values(by='Mean Abs SHAP', ascending=False).head(20))
   The word "typically" is doing a lot of work in that sentence, as in many cases a feature's impact on the final prediction can have a complicated relationship with its value.  We can see the exact relationship between a feature's value and impact on predictions with dependence plots.  These are scatterplots of each data point showing the feature's value and prediction impact it produced.  Because the values of <em>other</em> features can influence a gradient boosting model's interpretation, these plots also introduce coloring showing the value of the next most-correlated feature for each point.  Some examples:<br><br>
 
   Dependence plot for bicycle rental racks.  A nice simple positive correlation (more bike rentals = more theft in the area).  Note the non-linear, step-wise relationship:
-  <img src = "{{ site.baseurl }}/biekrental" width="100%">
+  <img src = "{{ site.baseurl }}/assets/projects/20250811_biketheft_assets/dependence_bikerental.png" width="100%">
   
   Dependence plot for apartments.  Note that the presence of nearby footways <em>decreases</em> predicted theft in cells with identical numbers of apartments:
-  <img src = "{{ site.baseurl }}/apartments" width="100%">
+  <img src = "{{ site.baseurl }}/assets/projects/20250811_biketheft_assets/dependence_apartments.png" width="100%">
 
   Dependence plot for footways.  Notably parabolic:
-  <img src = "{{ site.baseurl }}/footways" width="100%">
+  <img src = "{{ site.baseurl }}/assets/projects/20250811_biketheft_assets/dependence_footway.png" width="100%">
 
   Dependence plot for pubs.  While there appears to be a positive correlation, the overall Spearman correlation was actually slightly <em>negative</em> (possibly due to the slightly parabolic relationship at high values):
-  <img src = "{{ site.baseurl }}/pubs" width="100%">
+  <img src = "{{ site.baseurl }}/assets/projects/20250811_biketheft_assets/dependence_pub.png" width="100%">
 
   It's worth keeping in mind that each data point in this model has almost <strong>500</strong> features, so the SHAP contributions of any one are a very incomplete picture of how the model actually reached its conclusion about predicted theft in an area.
 </details>
