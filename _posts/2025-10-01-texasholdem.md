@@ -248,7 +248,7 @@ Before getting into the full analysis at each betting stage, there's some cool c
 <figcaption>Relative pull rates of each poker hand in seven-card Texas hold 'em</figcaption>
 
 
-We can also calculate the win rate of each type of hand, which is dependant on the number of players at the table. As more players are introduced at the table, it becomes more likely someone will beat you and the winning hands become more competitive. For example, "two pair" is practically a shoe-in at a two-person table, but a death sentence at 10:
+We can also calculate the win rate of each type of hand, which is dependant on the number of players at the table. As more players are introduced at the table, it becomes more likely someone will beat you and the winning hands become more competitive. For example, "two pair" is practically a shoe-in at a two-person table, but pretty poor with 10:
 
 ![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/handwinrate.png)
 <figcaption>Overall win rates for each poker hand, per Texas hold 'em table size</figcaption>
