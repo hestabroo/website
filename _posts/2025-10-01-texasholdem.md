@@ -17,26 +17,26 @@ header:
 
 
 ## Intro
-A quick palette cleanser after the hellscape of Gerrymandering!  After losing all my cents at a boys night of penny poker, I found myself wishing I had a statistical reference sheet to know how "good" my hand actually was at each stage of the game.  It felt like it made statistical sense to fold *every* hand at the pre-flop stage unless you got pocket aces, since you "probably weren't going to get anything good".  However, I realized everyone at the table is in the same boat, so was curious about a way to see if the *relative* odds were in your favour, and if this could be distilled into one simple-to-reference chart.
+A quick palette cleanser after the hellscape of Gerrymandering!.  After losing all my cents at a boys night of penny poker, I found myself wishing I had a statistical reference sheet to know how "good" my hand actually was at each stage of the game.  It felt like it made statistical sense to fold *every* hand at the pre-flop stage unless you got pocket aces, since you "probably weren't going to get anything good".  However, I realized everyone at the table is in the same boat, so was curious about a way to see if the *relative* odds were in your favour, and if this could be distilled into one simple-to-reference chart.
 
 
 ## Background
-As a quick overview/refresher, Texas Hold 'Em is a version of poker where each player is dealt two cards, and five additional cards are dealt face up in the center ("the river").  Players compete to form the best five-card poker hand they can using the seven available cards (two in their hand, plus five in the communal river).  Ranking order of possible hand types is:
+As a quick overview/refresher, Texas Hold 'Em is a version of poker where each player is dealt two cards, and five additional cards are dealt face up in the center ("the river").  Players compete to form the best five-card poker hand using the seven available cards (two in their hand, plus five in the communal river).  Ranking order of possible hand types is:
 
 1. **Royal Straight Flush** ("10,J,Q,K,A" all of the same suit)
 2. **Straight Flush** (any five sequential cards of the same suit)
-3. **Four of a Kind** (like it sounds, any four cards with matching face values)
+3. **Four of a Kind** (like it sounds - any four cards with matching face values)
 4. **Full House** (three cards of one matching face, plus two of another - e.g. "A,A,A,Q,Q")
 5. **Flush** (five cards of the same suit)
 6. **Straight** (any five sequential cards)
 7. **Three of a Kind** (like it sounds)
-8. **Two Pair** (two pairs of matching face value)
+8. **Two Pair** (two pairs cards with matching face values)
 9. **Pair** (two cards of matching face value)
 10. **High Card** (none of the above, simply your highest card face value)
 
-If two players have the same type of hand, the hand containing the highest face value wins (suits don't matter).  For straights, aces can be either high or low at the player's discretion, but not both at once (e.g. "K,Q,A,2,3" is not a valid straight).  For simplicity, I'm ignoring "Royal Straight Flush" from here on, since it's just a high-ranking instance of a straight flush (I think people just like to have a name for it).
+If two players have the same type of hand, the hand containing the highest face value wins (suits don't matter).  For straights, aces can be either high or low at the player's discretion, but not both at once (e.g. "K,Q,A,2,3" is *not* a valid straight).  For simplicity, from here on I'm ignoring "Royal Straight Flush" from here on since it's just a high-ranking instance of a straight flush (I think people just like to have a name for it).
 
-Cards are not dealt all at once, rather in stages with opportunity ("obligation", really) for betting between each.  First, players are dealt their two personal cards ("the pre-flop"), then three of the communal river cards are dealt ("the flop"), then one more river card ("the turn"), then the last river card ("the river").  There's a final round of betting after "the river", and then players reveal their cards and most of them lose.
+Cards are not dealt all at once, rather in stages with opportunity ("obligation", really) for betting between each.  First, players are dealt their two personal cards ("the pre-flop"), then three of the communal river cards are revealed ("the flop"), then one more river card ("the turn"), then the last river card ("the river").  There's a final round of betting after "the river", and then players reveal their cards and most of them lose.
 
 Alright, let's get to it!
 
