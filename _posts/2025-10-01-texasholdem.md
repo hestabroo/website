@@ -7,12 +7,12 @@ excerpt: 'Creating an intuitive cheat sheet to distill the complexity of winning
 author_profile: false
 tags: [Statistical Modelling]
 header:
-  teaser: /assets/projects/20251001_texasholdem/TexasHoldEmOdds_10Players.pdf
+  teaser: /assets/projects/20251001_texasholdem/TexasHoldEmOdds_10Players.png
 ---
 
 *tl;dr: Below is a table summarizing your odds of winning a hand of Texas hold 'em at any betting stage, with any hand.  Use it to skunk your next poker night with the power of stats!  Read on for the full process of developing it.*
 
-![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/TexasHoldEmOdds_10Players.pdf)
+![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/TexasHoldEmOdds_10Players.png)
 <figcaption>A single table summarizing the odds of winning a hand of Texas hold 'em at each betting stage based on the cards in your hand</figcaption>
 
 
@@ -504,7 +504,7 @@ With all early-game hands and relevant wins/losses established, the final challe
 
 The last thing to add in here was *ranges*.  Not all hands are equal, and so your odds might look much better if you're working off a pair of **aces** vs. **2s**.  To handle this, the relevant high card was also logged for each of the early-game betting stage hands.  Instead of just grouping all "pairs at the turn" together, we can stratify by them by the relevant high card and actually calculate the exact win odds for a pair of 4s vs. a pair of queens.  In the final chart, these are merely summarized as full ranges.  A player using this chart should interpolate between these depending on what they're holding:
 
-![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/TexasHoldEmOdds_10Players.pdf)
+![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/TexasHoldEmOdds_10Players.png)
 <figcaption>The final summary chart of Texas hold 'em win probability for every hand, at every betting stage</figcaption>
 
 <details>
@@ -586,7 +586,7 @@ for nplayers in range(2,11):
 
 
 
-And that's it!  As you may have noticed, the examples above all use the 10-player table.  The link below includes summary charts for all table sizes (2-10 players).  Note that the chart you start a hand with should be used *regardless* of how many players fold.  If 10 players were dealt in at the start of a hand, the odds that someone has a better hand than you remains 90% even if 5 players drop out* (a sort of reverse-Monty Hall problem, if you will).<br>*Note: like all game theory, this does rely on the assumption that all players act logically...
+And that's it!  As you may have noticed, the examples above all use the 10-player table.  The link below includes summary charts for all table sizes (2-10 players).  Note that the chart you start a hand with should be used *regardless* of how many players fold.  If 10 players were dealt in at the start of a hand, the odds that someone has a better hand than you remains 90% even if 5 players drop out (a sort of reverse-Monty Hall problem, if you will).
 
 [Download All Summary Charts ⬇️]({{ site.baseurl }}/assets/projects/20251001_texasholdem/TexasHoldemOddsTables.zip){:download="TexasHoldemOddsTables.zip"}
 
