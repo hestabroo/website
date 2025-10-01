@@ -201,7 +201,7 @@ Okay, with that set up - let's let the robots play!  I had them play games of 2-
 
 <details>
   <summary>Shhh - robots at play</summary>
-  It's a loop!  The order of execution doesn't directly follow real world play order, as there were some quicker evaluation methods available by doing later stages earlier and re-using evaluated components.  The robots weren't playing for real money so they didn't mind:
+  It's a loop!  The order of execution doesn't directly follow real world play order, as there were some quicker evaluation methods available by doing later stages earlier and re-using evaluated components.  The robots weren't playing for money so they didn't mind:
 
   {% highlight python %}
 simpledeck = list(deck.index)  #speed
