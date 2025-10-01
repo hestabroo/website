@@ -1,3 +1,4 @@
+---
 layout: single
 title: "Texas Hold 'Em Cheat Sheet"
 date: 2025-10-01
