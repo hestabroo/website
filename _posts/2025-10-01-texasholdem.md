@@ -6,12 +6,12 @@ excerpt: 'Creating an intuitive cheat sheet to distill the complexity of winning
 author_profile: false
 tags: [Statistical Modelling]
 header:
-  teaser: /10PLAYERCHART
+  teaser: /assets/projects/20251001_texasholdem/TexasHoldEmOdds_10Players.pdf
 ---
 
 *tl;dr: Below is a table summarizing your odds of winning a hand of Texas hold 'em at any betting stage, with any hand.  Use it to skunk your next poker night with the power of stats!  Read on for the full process of developing it.*
 
-![]({{ site.baseurl }}/10PLAYERCHART)
+![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/TexasHoldEmOdds_10Players.pdf)
 <figcaption>A single table summarizing the odds of winning a hand of Texas hold 'em at each betting stage based on the cards in your hand</figcaption>
 
 
@@ -56,10 +56,10 @@ So, the approach was basically to just model a bunch of Texas hold 'em hands aga
 
 First up was modelling the deck and a function to evaluate the best poker hand each player had.  Not much output to show here but... I did that.  Check out the dropdown if you want to see the code and how it works.
 
-![]({{ site.baseurl }}/CHECKHAND1)
-![]({{ site.baseurl }}/CHECKHAND2)
-![]({{ site.baseurl }}/CHECKHAND3)
-![]({{ site.baseurl }}/WHOWINS1)
+![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/checkhand1.png)
+![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/checkhand2.png)
+![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/checkhand3.png)
+![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/whowins1.png)
 <figcaption>...it works</figcaption>
 
 <details>
@@ -195,7 +195,7 @@ def whowins(lst):  #define a function to compare a list of hands (lst of lsts) a
 ### Monte Carlo
 Okay, with that set up - let's let the robots play!  I had them play games of 2-10 players (allowable table sizes for Texas hold 'em) and they got to play a million hands at each table... lucky guys!  Why a million?  Why not.  Again, not much real output to show at this stage, so here's a pretty picture of the 9M simulations colouring the ones we won:
 
-![]({{ site.baseurl }}/STARMAP)
+![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/simulationsstarmap.png)
 <figcaption>A mesmerizing but useless map of 9 million Texas hold 'em simulations, highlighting hands we won and the table size</figcaption>
 
 <details>
@@ -243,13 +243,13 @@ print("complete")
 ### Overall Results
 Before getting into the full analysis at each betting stage, there's some cool checks we can do on the overall results.  Specifically, checking in on the net likelihood of each hand, as well as its win rate depending on the table size.  On the overall pull rates, we will be happy to confirm that the powers that be were not out to lunch when they decided which hands were most valuable (a straight is indeed more common than a flush).  One notable exception is the single high card, which is actually *less* likely to end up with than both a pair and **two pairs**.  The high-level stats check out on that, but food for thought next time you think you're laughing with pocket aces:
 
-![]({{ site.baseurl }}/PULLRATES)
+![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/pullrates.png)
 <figcaption>Relative pull rates of each poker hand in seven-card Texas hold 'em</figcaption>
 
 
 We can also calculate the win rate of each type of hand, which is dependant on the number of players at the table. As more players are introduced at the table, it becomes more likely someone will beat you and the winning hands become more competitive. For example, "two pair" is practically a shoe-in at a two-person table, but a death sentence at 10:
 
-![]({{ site.baseurl }}/WINRATES)
+![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/handwinrate.png)
 <figcaption>Overall win rates for each poker hand, per Texas hold 'em table size</figcaption>
 
 <details>
@@ -316,7 +316,7 @@ The first (arguably biggest) challenge in this step was deciding how on earth to
 
 My high-level approach was to, at each betting stage, log every possible hand a player could consider themselves working towards.  For example, the hand "A,A,3,4,J" could be on its way towards any of a Pair, Three of a Kind, Four of a Kind, Two Pair, Full House, or a Straight (plus flush/straight flush if the suits were right).  The categories above let me simplify this a lot by simply saying the hand was "2 cards down the 'x of a kind' road" and "3 cards towards a straight".  The linear hierarchies within each group also let me avoid logging irrelevant options (e.g. there's no point calling three jacks "a pair").  Running each of the 9M hands through this produced something like the following:
 
-![]({{ site.baseurl }}/CROPPEDTABLE)
+![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/combinedcropped.png)
 <figcaption>Possibilities at each betting stage for one hand.  At the pre-flop it looked like a straight flush ("9,_,_,_,K").  At the flop it looked like either a straight flush ("9,_,J,_,K") or a pair ("J,J").  At the turn it looked like a straight flush (same), a pair (same), or a flush (4 hearts).  Ultimately, it was a pair.</figcaption>
 
 <details>
@@ -443,7 +443,7 @@ np.savez_compressed("stageoptions.npz", stageoptions=stageoptions)
 
 The keen observer will notice that this analysis introduced a lot of "duplicates", in the sense that one hand can be many things at one time.  This is fine because we do want to report each of the possibilities, however the current setup would unfairly attribute wins to irrelevant early-game hands (e.g. if a player has a pair of jacks at the flop and goes on to win with a *flush*, it would be remiss to credit that victory as "likely if you have a pair of jacks at the flop").  Again, the two hand groupings are helpful here as they establish (mostly) clear lineages of hands that build towards each other.  As a result, we can ensure that we only attribute *relevant* wins to early game hands:
 
-![]({{ site.baseurl }}/FULLTABLESAMPLE)
+![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/combinedsample.png)
 <figcaption>The same possibilities as above - note that only the "x of a kind" hand possibilities were deemed 'relevant' to the final hand</figcaption>
 
 <details>
@@ -497,13 +497,13 @@ optionscombined.head(10)
 ### Putting it All Together
 With all early-game hands and relevant wins/losses established, the final challenge was how to compile all of this noise into a single easy-to-read chart.  The format I landed on is as follows, with each of the six unique types of poker hands (broken into their two groups) tracked across each betting stage of a hand.  Where relevant, the "percentage completion" of each hand has a unique value.  The probabilities in each box represent the odds that you will go on to win with **that hand** (or a derivative of it).  These values are *additive*, since they only reflect the win likelihood of relevant final hands and lower-derivative hands were not logged at any stage:
 
-![]({{ site.baseurl }}/ANNOTATEDSIMPLIFIED)
+![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/annotatedsimplified10p.png)
 <figcaption>A simplified version of the final summary chart, with win probabilities for each early-stage hand</figcaption>
 
 
 The last thing to add in here was *ranges*.  Not all hands are equal, and so your odds might look much better if you're working off a pair of **aces** vs. **2s**.  To handle this, the relevant high card was also logged for each of the early-game betting stage hands.  Instead of just grouping all "pairs at the turn" together, we can stratify by them by the relevant high card and actually calculate the exact win odds for a pair of 4s vs. a pair of queens.  In the final chart, these are merely summarized as full ranges.  A player using this chart should interpolate between these depending on what they're holding:
 
-![]({{ site.baseurl }}/10PCHART)
+![]({{ site.baseurl }}/assets/projects/20251001_texasholdem/TexasHoldEmOdds_10Players.pdf)
 <figcaption>The final summary chart of Texas hold 'em win probability for every hand, at every betting stage</figcaption>
 
 <details>
@@ -587,7 +587,7 @@ for nplayers in range(2,11):
 
 And that's it!  As you may have noticed, the examples above all use the 10-player table.  The link below includes summary charts for all table sizes (2-10 players).  Note that the chart you start a hand with should be used *regardless* of how many players fold.  If 10 players were dealt in at the start of a hand, the odds that someone has a better hand than you remains 90% even if 5 players drop out* (a sort of reverse-Monty Hall problem, if you will).<br>*Note: like all game theory, this does rely on the assumption that all players act logically...
 
-<<link to zip folder??>>
+[Download All Summary Charts ⬇️]({{ site.baseurl }}/assets/projects/20251001_texasholdem/TexasHoldemOddsTables.zip){:download="TexasHoldemOddsTables.zip"}
 
 
 
