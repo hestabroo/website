@@ -82,7 +82,7 @@ for suit in ['spades', 'clubs', 'hearts', 'diamonds']:
         elif n==13: face='K'
         else: face=n
 
-        numrank = 14 if n==1 else n  #call ace 14 for later hi card ease
+        numrank = 14 if n==1 else n  #call ace 14 for later hi card ease  #yeah yeah yeah, should have just changed the range...
 
         tag = str(face) + suit[:1]
 
@@ -96,7 +96,7 @@ deckdict = deck.to_dict()  #need more speeeeed
   {% endhighlight %}
 
 
-  Next was a function to check the highest-scoring poker hand in a given set of cards.  This logic had to be dynamic to card sets of any length, not just 5 (an early iteration evaluated 5-card combinations independently, but that was slow).  The core idea of this is to, in one fell swoop, evaluate the best existing hand of that "type" (see <strong>Preliminary Hands</strong> for a bit more context on the types I defined.  Hand types are evaluated in priority order to save compute evaluating lesser hands.  There's a bit of a unique approach for each hand type, but these all work primarily off of list comprehension to minimize overhead:
+  Next was a function to check the highest-scoring poker hand in a given set of cards.  This logic had to be dynamic to card sets of any length, not just 5 (an early iteration evaluated 5-card combinations independently, but that was slow).  The core idea of this is to, in one fell swoop, evaluate the best existing hand of that "type" (see <strong>Preliminary Hands</strong> for a bit more context on the types I defined).  Hand types are evaluated in priority order to save compute evaluating lesser hands.  There's a bit of a unique approach for each hand type, but these all work primarily off of list comprehension to minimize overhead:
 
   {% highlight python %}
 #make a function to check what you have
