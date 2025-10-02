@@ -5,7 +5,7 @@ date: 2025-08-11
 subtitle: 'Analyzing historical bicycle theft in Toronto and predicting correlated geographic features'
 excerpt: 'Analyzing historical bicycle theft in Toronto and predicting correlated geographic features'
 author_profile: false
-tags: [Geospatial Analysis, Machine Learning]
+tags: [Geospatial Analysis, Machine Learning, Deep Learning]
 header:
   teaser: /assets/projects/20250811_biketheft_assets/teasermap.png
 ---
