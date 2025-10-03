@@ -441,6 +441,8 @@ ax.add_patch(wkday_patch())
 ax.add_patch(wkend_patch())
 ax.add_patch(border_patch())
   {% endhighlight %}
+
+  Spotify's timestamps are in UTC, which means they don't account for local timezone, daylight savings time, and listenening done abroad.  In the prior setup, these are pretty lazily hard-coded to Toronto/New York EST without consideration of daylight savings.  If you don't live in Toronto your results will be shifted, and 50% of most users' results will be shifted an hour later for daylight savings.  If you binged Despacito on your trip to Spain, those hours are going to show up in a really wonky spot.  Definitely something that could be done more robustly if there were ever a V2 build.
 </details>
 
 
